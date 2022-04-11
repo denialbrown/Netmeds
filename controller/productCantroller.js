@@ -253,7 +253,7 @@ module.exports = {
                 .populate('subCategoryId')
                 .exec()
             if (!product) {
-                return send(res,ErrorCode.INVALID_CODE, HttpStatus.UNAUTHORIZED, Message.PRODUCT_NOT_FOUND, mainProduct);
+                return send(res, ErrorCode.INVALID_CODE, HttpStatus.UNAUTHORIZED, Message.PRODUCT_NOT_FOUND, mainProduct);
             }
 
             var mainProduct = []
@@ -288,7 +288,7 @@ module.exports = {
         try {
             var checkProduct = await productSchema.findOne({ _id: req.params.productId, isDeleted: false });
             if (!checkProduct) {
-                return send(res,ErrorCode.INVALID_CODE, HttpStatus.UNAUTHORIZED, Message.PRODUCT_NOT_FOUND, null);
+                return send(res, ErrorCode.INVALID_CODE, HttpStatus.UNAUTHORIZED, Message.PRODUCT_NOT_FOUND, null);
             }
             checkProduct.categoryId = req.body.categoryId
             checkProduct.subCategoryId = req.body.subCategoryId
@@ -314,7 +314,7 @@ module.exports = {
                 const files = req.files.images
                 var check = files.length
                 if (check > 5) {
-                    return send(res,ErrorCode.INVALID_CODE, HttpStatus.UNAUTHORIZED, Message.IMAGE_5_IMAGE, null)
+                    return send(res, ErrorCode.INVALID_CODE, HttpStatus.UNAUTHORIZED, Message.IMAGE_5_IMAGE, null)
                 }
                 await checkProduct.save()
                 if (!fs.existsSync('./uploads/' + folderName)) {
@@ -352,7 +352,7 @@ module.exports = {
         try {
             var checkProduct = await productSchema.findOne({ _id: req.params.productId, isDeleted: false });
             if (!checkProduct) {
-                return send(res,ErrorCode.INVALID_CODE, HttpStatus.UNAUTHORIZED, Message.PRODUCT_NOT_FOUND, null);
+                return send(res, ErrorCode.INVALID_CODE, HttpStatus.UNAUTHORIZED, Message.PRODUCT_NOT_FOUND, null);
             }
             checkProduct.isDeleted = true
             checkProduct.save()
@@ -375,7 +375,7 @@ module.exports = {
             }
             var product = await productSchema.findOne({ _id: req.body.productId, isDeleted: false })
             if (!product) {
-                return send(res,ErrorCode.INVALID_CODE, HttpStatus.UNAUTHORIZED, Message.PRODUCT_NOT_FOUND, null);
+                return send(res, ErrorCode.INVALID_CODE, HttpStatus.UNAUTHORIZED, Message.PRODUCT_NOT_FOUND, null);
             }
             var wishProduct = new wishListSchema
             wishProduct.userId = req.authUser._id
@@ -392,7 +392,7 @@ module.exports = {
             var ids = []
             var product = await wishListSchema.find({ userId: req.authUser._id, isDeleted: false })
             if (!product) {
-                return send(res,ErrorCode.INVALID_CODE, HttpStatus.UNAUTHORIZED, Message.WISHLIST_EMPTY, null);
+                return send(res, ErrorCode.INVALID_CODE, HttpStatus.UNAUTHORIZED, Message.WISHLIST_EMPTY, null);
             }
             for (let i = 0; i < product.length; i++) {
                 var data = product[i].productId
@@ -438,7 +438,7 @@ module.exports = {
                 },
             ])
             if (!product) {
-                return send(res,ErrorCode.INVALID_CODE, HttpStatus.UNAUTHORIZED, Message.PRODUCT_NOT_FOUND, null);
+                return send(res, ErrorCode.INVALID_CODE, HttpStatus.UNAUTHORIZED, Message.PRODUCT_NOT_FOUND, null);
             }
             var listProduct = []
             for (let i = 0; i < product.length; i++) {
@@ -475,7 +475,7 @@ module.exports = {
         try {
             var product = await wishListSchema.findOne({ _id: req.params.wishListId, isDeleted: false })
             if (!product) {
-                return send(res,ErrorCode.INVALID_CODE, HttpStatus.UNAUTHORIZED, Message.PRODUCT_NOT_FOUND, null);
+                return send(res, ErrorCode.INVALID_CODE, HttpStatus.UNAUTHORIZED, Message.PRODUCT_NOT_FOUND, null);
             }
             product.isDeleted = true
             product.save()
