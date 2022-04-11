@@ -128,7 +128,6 @@ module.exports = {
                 return;
             }
             var checkAddress = await addressSchema.findOne({ _id: req.params.addressId, isDeleted: false });
-            console.log(checkAddress);
             if (!checkAddress) {
                 return send(res, HttpStatus.SUCCESS_CODE, HttpStatus.SUCCESS_CODE, Message.ADDRESS_NOT_FOUND, null);
             }

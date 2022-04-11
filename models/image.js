@@ -6,9 +6,6 @@ const imageSchema = new mongoose.Schema({
     image: {
         type: String,
     },
-    imageName: {
-        type: String,
-    },
     productId: {
         type: mongoose.Schema.Types.ObjectId
     },

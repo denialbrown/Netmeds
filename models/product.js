@@ -22,7 +22,13 @@ const productSchema = new mongoose.Schema({
   price: {
     type: String,
   },
-  pricedetails: {
+  discount: {
+    type: String,
+  },
+  bestPrice: {
+    type: String,
+  },
+  manufacture: {
     type: String,
   },
   status: {

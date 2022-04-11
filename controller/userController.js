@@ -107,7 +107,6 @@ module.exports = {
         try {
             var user = req.authUser
             return send(res, HttpStatus.SUCCESS_CODE, HttpStatus.SUCCESS_CODE, Message.USER_SIGNUP_SUCCESS, {
-                id: user._id,
                 firstName: user.firstName,
                 lastName: user.lastName,
                 phone: user.phone,
@@ -132,7 +131,6 @@ module.exports = {
             user.age = req.body.age
             user.save()
             return send(res, HttpStatus.SUCCESS_CODE, HttpStatus.SUCCESS_CODE, Message.USER_SIGNUP_SUCCESS, {
-                id: user._id,
                 firstName: user.firstName,
                 lastName: user.lastName,
                 phone: user.phone,

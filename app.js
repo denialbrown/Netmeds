@@ -16,6 +16,7 @@ app.use('/api', require("./routes/user"));
 app.use('/api', require("./routes/address"));
 app.use('/api', require("./routes/product"));
 app.use("/uploads", express.static("./uploads"));
+
 const swaggerDefinition = {
     openapi: '3.0.0',
     info: {
