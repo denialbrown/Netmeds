@@ -55,4 +55,15 @@ router.delete("/delete/product/:productId", [middleware.authenticateUser], produ
 router.post("/add/wishList", [middleware.authenticateUser], productController.addWishList);
 router.get("/get/wishList", [middleware.authenticateUser], productController.getWishList);
 router.delete("/delete/wishList/:wishListId", [middleware.authenticateUser], productController.deleteWishList);
+
+router.post("/add/review", [middleware.authenticateUser],
+    body("productId").exists().withMessage(Message.PRODUCT_ID_IS_REQUIRED).not().isEmpty(),
+    body("star").exists().withMessage(Message.STAR_IS_REQUIRED).not().isEmpty(),
+    body("name").exists().withMessage(Message.FIRST_NAME_IS_REQUIRED).not().isEmpty(),
+    body("title").exists().withMessage(Message.TITLE_IS_REQUIRED).not().isEmpty(),
+    body("details").exists().withMessage(Message.DETAILS_IS_REQUIRED).not().isEmpty(),
+    productController.addreview);
+
+router.get("/get/review/:productId", [middleware.authenticateUser], productController.getReview);
+router.delete("/delete/review/:reviewId", [middleware.authenticateUser], productController.deleteReview);
 module.exports = router

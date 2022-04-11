@@ -2,6 +2,7 @@ const categorySchema = require("../models/category");
 const subCategorySchema = require("../models/subCategory");
 const productSchema = require("../models/product");
 const wishListSchema = require("../models/wishList");
+const reviewSchema = require("../models/review");
 const imageSchema = require("../models/image");
 const Service = require("../helper/index");
 const send = Service.sendResponse;
@@ -128,21 +129,15 @@ module.exports = {
             var price = req.body.price
             var discount = req.body.discount
             newproduct.bestPrice = Service.price(price, discount)
-
+            await newproduct.save()
             if (req.files) {
                 const files = req.files.images
-                var check = files.length
-                if (check > 5) {
-                    return send(res, ErrorCode.INVALID_CODE, HttpStatus.UNAUTHORIZED, Message.IMAGE_5_IMAGE, null)
-                }
-                await newproduct.save()
                 const folderName = newproduct._id.valueOf()
                 fs.mkdir('./uploads/' + folderName, (err) => {
                     if (err) {
                         console.log(err);
                     }
                 })
-
                 var imageData = []
                 for (let i = 0; i < files.length; i++) {
                     var fileName = files[i].name;
@@ -154,8 +149,8 @@ module.exports = {
                     }
                     imageData.push(data)
                 }
+                imageData.splice(5, imageData.length - 5)
                 await imageSchema.insertMany(imageData)
-
             }
             return send(res, HttpStatus.SUCCESS_CODE, HttpStatus.SUCCESS_CODE, Message.PRODUCT_ADD_SUCCESS, {
                 productName: newproduct.productName,
@@ -312,10 +307,6 @@ module.exports = {
             }
             if (req.files) {
                 const files = req.files.images
-                var check = files.length
-                if (check > 5) {
-                    return send(res, ErrorCode.INVALID_CODE, HttpStatus.UNAUTHORIZED, Message.IMAGE_5_IMAGE, null)
-                }
                 await checkProduct.save()
                 if (!fs.existsSync('./uploads/' + folderName)) {
                     fs.mkdir('./uploads/' + folderName, (err) => {
@@ -335,7 +326,9 @@ module.exports = {
                     }
                     imageData.push(data)
                 }
+                imageData.splice(5, imageData.length - 5)
                 await imageSchema.insertMany(imageData)
+
             }
             return send(res, HttpStatus.SUCCESS_CODE, HttpStatus.SUCCESS_CODE, Message.PRODUCT_UPDATE_SUCCESS, {
                 productName: checkProduct.productName,
@@ -485,5 +478,59 @@ module.exports = {
             return send(res, HttpStatus.INTERNAL_SERVER_CODE, HttpStatus.INTERNAL_SERVER_CODE, Message.SOMETHING_WENT_WRONG, null);
         }
     },
-
+    addreview: async function (req, res) {
+        try {
+            if (Service.hasValidatorErrors(req, res)) {
+                return;
+            }
+            var newReview = new reviewSchema;
+            newReview.userId = req.authUser._id
+            newReview.productId = req.body.productId
+            newReview.star = req.body.star
+            newReview.name = req.body.name
+            newReview.details = req.body.details
+            newReview.title = req.body.title
+            newReview.save()
+            return send(res, HttpStatus.SUCCESS_CODE, HttpStatus.SUCCESS_CODE, Message.REVIEW_ADD_SUCCESS, {
+                star: newReview.star,
+                name: newReview.name,
+                title: newReview.title,
+                details: newReview.details,
+            });
+        } catch (error) {
+            console.log('error', error);
+            return send(res, HttpStatus.INTERNAL_SERVER_CODE, HttpStatus.INTERNAL_SERVER_CODE, Message.SOMETHING_WENT_WRONG, null);
+        }
+    },
+    getReview: async function (req, res) {
+        try {
+            var review = await reviewSchema.find({ productId: req.params.productId, isDeleted: false }, {
+                star: 1,
+                name: 1,
+                title: 1,
+                details: 1,
+            })
+            if (!review) {
+                return send(res, ErrorCode.INVALID_CODE, HttpStatus.UNAUTHORIZED, Message.REVIEW_NOT_FOUND, null);
+            }
+            return send(res, HttpStatus.SUCCESS_CODE, HttpStatus.SUCCESS_CODE, Message.REVIEW_LIST_SUCCESS, review);
+        } catch (error) {
+            console.log('error', error);
+            return send(res, HttpStatus.INTERNAL_SERVER_CODE, HttpStatus.INTERNAL_SERVER_CODE, Message.SOMETHING_WENT_WRONG, null);
+        }
+    },
+    deleteReview: async function (req, res) {
+        try {
+            var review = await reviewSchema.findOne({ _id: req.params.reviewId, isDeleted: false })
+            if (!review) {
+                return send(res, ErrorCode.INVALID_CODE, HttpStatus.UNAUTHORIZED, Message.REVIEW_NOT_FOUND, null);
+            }
+            review.isDeleted = true
+            review.save()
+            return send(res, HttpStatus.SUCCESS_CODE, HttpStatus.SUCCESS_CODE, Message.REVIEW_DELETE_SUCCESS, null);
+        } catch (error) {
+            console.log('error', error);
+            return send(res, HttpStatus.INTERNAL_SERVER_CODE, HttpStatus.INTERNAL_SERVER_CODE, Message.SOMETHING_WENT_WRONG, null);
+        }
+    },
 }

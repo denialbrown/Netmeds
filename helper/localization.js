@@ -54,7 +54,14 @@ const Message ={
     CATEGORY_NAME_IS_REQUIRED:"category name is required",
     SUBCATEGORY_NAME_IS_REQUIRED:"subcategory name is required",
     IMAGE_INVAID:"add only 5 or less than images",
-    IMAGE_5_IMAGE:"enter only 5 or less than images"
+    IMAGE_5_IMAGE:"enter only 5 or less than images",
+    TITLE_IS_REQUIRED:"title is required",
+    STAR_IS_REQUIRED:"star is required",
+    PRODUCT_ID_IS_REQUIRED:"product id is required",
+    REVIEW_ADD_SUCCESS:"review added sucessfully",
+    REVIEW_LIST_SUCCESS:"review listed sucessfully",
+    REVIEW_DELETE_SUCCESS:"review deleted sucessfully",
+    REVIEW_NOT_FOUND:"review not found",
 }
 
 
