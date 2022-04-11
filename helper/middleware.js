@@ -9,7 +9,6 @@ module.exports = {
     authenticateUser: async function (req, res, next) {
         try {
             const accessToken = req.headers.token;
-            console.log(accessToken);
             if (accessToken === undefined) {
                 return send(res, HttpStatus.BAD_REQUEST_STATUS_CODE, ErrorCode.REQUIRED_CODE, Message.TOKEN_REQUIRED, null);
             }
@@ -25,7 +24,6 @@ module.exports = {
             }
 
             req.authUser = user;
-            console.log(user);
             return next();
         } catch (err) {
             next(err);

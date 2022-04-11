@@ -39,7 +39,22 @@ const Message ={
     IMAGE_REQUIRED:"image is required",
     CATEGORY_UPDATED:"category updated sucessfully",
     CATEGORY_LIST:"category listed sucessfully",
-    CATEGORY_DELETED:"category deleted sucessfully"
+    CATEGORY_DELETED:"category deleted sucessfully",
+    PRODUCT_ADD_WISHLIST:"product sucessfully added to wishlist",
+    WISH_LIST:"wish list",
+    WISH_LIST_DELETE:"wishlist product deleted sucessfully",
+    PRODUCT_ADDED:"product already added to wishlist",
+    WISHLIST_EMPTY:"your wishlist is empty",
+    CATEGORY_ID_IS_REQUIRED:"category id is required",
+    SUBCATEGORY_ID_IS_REQUIRED:"subcategory id is required",
+    PRODUCT_NAME_IS_REQUIRED:"product name is required",
+    DETAILS_IS_REQUIRED:"details is required",
+    PRICE_IS_REQUIRED:"price is required",
+    MANUFACTURE_IS_REQUIRED:"manufacture is required",
+    CATEGORY_NAME_IS_REQUIRED:"category name is required",
+    SUBCATEGORY_NAME_IS_REQUIRED:"subcategory name is required",
+    IMAGE_INVAID:"add only 5 or less than images",
+    IMAGE_5_IMAGE:"enter only 5 or less than images"
 }
 
 

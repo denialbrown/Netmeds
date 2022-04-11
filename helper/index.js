@@ -30,6 +30,10 @@ module.exports = {
             return false;
         }
     },
+    price: function (price, discount) {
+        var discounts = price * discount / 100
+        return price - discounts
+    },
     getCurrentTimeStampWithAdditionMinutes: function (minutes) {
         return moment().add(minutes, "minutes").unix();
     },
@@ -98,17 +102,17 @@ module.exports = {
     getCurrentTimeStampUnix: function () {
         return moment().unix();
     },
-    random:async function generateRandomNumber() {
+    random: async function generateRandomNumber() {
         var minm = 1000000000;
         var maxm = 9999999999;
         return Math.floor(Math
-        .random() * (maxm - minm + 1)) + minm;
-    
+            .random() * (maxm - minm + 1)) + minm;
+
     },
-    getUserById:async function getUserById(userId) {
+    getUserById: async function getUserById(userId) {
         return await userSchema.findById(userId);
     }
-    
+
 }
 
 function prepareResponse(status, message, data) {
