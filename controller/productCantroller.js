@@ -129,7 +129,7 @@ module.exports = {
             var price = req.body.price
             var discount = req.body.discount
             newproduct.bestPrice = Service.price(price, discount)
-            await newproduct.save()
+            // await newproduct.save()
             if (req.files) {
                 const files = req.files.images
                 const folderName = newproduct._id.valueOf()
@@ -139,17 +139,18 @@ module.exports = {
                     }
                 })
                 var imageData = []
-                for (let i = 0; i < files.length; i++) {
-                    var fileName = files[i].name;
+                files.forEach(async (value , index) => {
+                    var fileName = value.name;
                     var Path = './uploads/' + folderName + '/' + fileName
-                    files[i].mv(Path)
-                    var data = {
-                        image: Path,
-                        productId: newproduct._id
+                    if (index < 2) {
+                        value.mv(Path)
+                        var data = {
+                            image: Path,
+                            productId: newproduct._id
+                        }
+                        imageData.push(data)
                     }
-                    imageData.push(data)
-                }
-                imageData.splice(5, imageData.length - 5)
+                })
                 await imageSchema.insertMany(imageData)
             }
             return send(res, HttpStatus.SUCCESS_CODE, HttpStatus.SUCCESS_CODE, Message.PRODUCT_ADD_SUCCESS, {
@@ -316,17 +317,18 @@ module.exports = {
                     })
                 }
                 var imageData = []
-                for (let i = 0; i < files.length; i++) {
-                    var fileName = files[i].name;
+                files.forEach(async (value , index) => {
+                    var fileName = value.name;
                     var Path = './uploads/' + folderName + '/' + fileName
-                    files[i].mv(Path)
-                    var data = {
-                        image: Path,
-                        productId: newproduct._id
+                    if (index < 2) {
+                        value.mv(Path)
+                        var data = {
+                            image: Path,
+                            productId: newproduct._id
+                        }
+                        imageData.push(data)
                     }
-                    imageData.push(data)
-                }
-                imageData.splice(5, imageData.length - 5)
+                })
                 await imageSchema.insertMany(imageData)
 
             }
