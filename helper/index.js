@@ -102,13 +102,6 @@ module.exports = {
     getCurrentTimeStampUnix: function () {
         return moment().unix();
     },
-    random: async function generateRandomNumber() {
-        var minm = 1000000000;
-        var maxm = 9999999999;
-        return Math.floor(Math
-            .random() * (maxm - minm + 1)) + minm;
-
-    },
     getUserById: async function getUserById(userId) {
         return await userSchema.findById(userId);
     }
