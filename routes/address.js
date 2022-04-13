@@ -18,7 +18,9 @@ router.post("/add/address", [middleware.authenticateUser],
 
 router.get("/get/address", [middleware.authenticateUser], addressController.listAddress);
 
-router.get("/getaddress/:addressId", [middleware.authenticateUser], addressController.getAddress);
+router.get("/getaddress/:addressId", [middleware.authenticateUser],
+    body("addressId").exists().isMongoId().withMessage(Message.INVALID_ADDRESS_ID).not().isEmpty(),
+    addressController.getAddress);
 
 router.post("/update/address/:addressId", [middleware.authenticateUser],
 

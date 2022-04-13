@@ -64,6 +64,9 @@ module.exports = {
     },
     getAddress: async function (req, res) {
         try {
+            if (Service.hasValidatorErrors(req, res)) {
+                return;
+            }
             var userAddress = await addressSchema.findOne({ _id: req.params.addressId, isDeleted: false }, {
                 _id: 0,
                 phone: 1,

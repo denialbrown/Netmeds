@@ -2,6 +2,7 @@ const Message ={
     INVALID_PHONE_NUMBER: "enter valid phone number",
     SOMETHING_WENT_WRONG: "something went wrong",
     OTP_IS_REQUIRED:"otp is required",
+    USER_EXIST:"user allready exist",
     TOKEN_IS_REQUIRED:"token is reuired",
     OTP_INVALID:"otp invalid",
     TOKEN_INVALID:"token is invalid",
@@ -34,10 +35,10 @@ const Message ={
     PRODUCT_NOT_FOUND:"product not found",
     PRODUCT_UPDATE_SUCCESS:"product updated sucessfully",
     PRODUCT_LIST:"product listed sucessfully",
-    PRODUCT_NOT_FOUND:"product not found",
     PRODUCT_DELETE:"product deleted sucessfully",
     IMAGE_REQUIRED:"image is required",
     CATEGORY_UPDATED:"category updated sucessfully",
+    CATEGORY_NOT_FOUND:"category not found",
     CATEGORY_LIST:"category listed sucessfully",
     CATEGORY_DELETED:"category deleted sucessfully",
     PRODUCT_ADD_WISHLIST:"product sucessfully added to wishlist",
@@ -57,16 +58,19 @@ const Message ={
     IMAGE_5_IMAGE:"enter only 5 or less than images",
     TITLE_IS_REQUIRED:"title is required",
     STAR_IS_REQUIRED:"star is required",
+    WISHLIST_ID_IS_REQUIRED:"wishlist id is reqired",
     PRODUCT_ID_IS_REQUIRED:"product id is required",
+    REVIEW_ID_IS_REQUIRED:"review id is required",
     REVIEW_ADD_SUCCESS:"review added sucessfully",
     REVIEW_LIST_SUCCESS:"review listed sucessfully",
     REVIEW_DELETE_SUCCESS:"review deleted sucessfully",
     REVIEW_NOT_FOUND:"review not found",
+    WHO_ARE_YOU:"who are you",
+    ADDRESS_ID_IS_REQUIRED:"address id is reqiured",
 }
 
 
 const Action = {
-    ACCESS: "access",
     LOGIN: "login",
 };
 

@@ -3,6 +3,7 @@ const Service = require("../helper/index");
 const send = Service.sendResponse;
 const { ErrorCode, HttpStatus } = require("../helper/enum")
 const { Message } = require("../helper/localization")
+const jwt_decode = require("jwt-decode");
 
 module.exports = {
 
@@ -11,7 +12,7 @@ module.exports = {
             if (Service.hasValidatorErrors(req, res)) {
                 return;
             }
-            var user = await userSchema.findOne({ phone: req.body.phone },)
+            var user = await userSchema.findOne({ phone: req.body.phone })
             if (!user) {
                 var newuser = new userSchema;
                 newuser.phone = req.body.phone
@@ -129,7 +130,14 @@ module.exports = {
             user.lastName = req.body.lastName
             user.gender = req.body.gender
             user.age = req.body.age
+            if(user.phone == undefined){
+                user.phone = req.body.phone
+            }
+            if(user.email == undefined){
+                user.email =req.body.email
+            }
             user.save()
+            console.log(user);
             return send(res, HttpStatus.SUCCESS_CODE, HttpStatus.SUCCESS_CODE, Message.USER_SIGNUP_SUCCESS, {
                 firstName: user.firstName,
                 lastName: user.lastName,
@@ -138,6 +146,36 @@ module.exports = {
                 gender: user.gender,
                 age: user.age,
             });
+        } catch (error) {
+            console.log('error', error);
+            return send(res, HttpStatus.INTERNAL_SERVER_CODE, HttpStatus.INTERNAL_SERVER_CODE, Message.SOMETHING_WENT_WRONG, null);
+        }
+    },
+    signupgoogle: async function (req, res) {
+        try {
+            if (Service.hasValidatorErrors(req, res)) {
+                return;
+            }
+            var token = req.body.token
+            var decoded = jwt_decode(token);
+            if (!decoded.aud == process.env.CLIENT_ID) {
+                return send(res, HttpStatus.UNAUTHORIZED, ErrorCode.INVALID_CODE, Message.WHO_ARE_YOU, null);
+            }
+            var user = await userSchema.findOne({ email: decoded.email })
+            if (!user) {
+                var user = new userSchema
+                user.email = decoded.email
+                await user.save()
+                const data = {
+                    loginToken: await Service.generateToken(user),
+                };
+                return send(res, HttpStatus.SUCCESS_CODE, HttpStatus.SUCCESS_CODE, Message.USER_LOGIN_SUCCESS, data);
+            }
+            const data = {
+                loginToken: await Service.generateToken(user),
+            };
+            return send(res, HttpStatus.SUCCESS_CODE, HttpStatus.SUCCESS_CODE, Message.USER_LOGIN_SUCCESS, data);
+
         } catch (error) {
             console.log('error', error);
             return send(res, HttpStatus.INTERNAL_SERVER_CODE, HttpStatus.INTERNAL_SERVER_CODE, Message.SOMETHING_WENT_WRONG, null);

@@ -6,7 +6,7 @@ const reviewSchema = require("../models/review");
 const imageSchema = require("../models/image");
 const Service = require("../helper/index");
 const send = Service.sendResponse;
-const { ErrorCode, HttpStatus } = require("../helper/enum")
+const { HttpStatus } = require("../helper/enum")
 const { Message } = require("../helper/localization");
 const fs = require('fs');
 
@@ -14,6 +14,9 @@ module.exports = {
 
     addCategory: async function (req, res) {
         try {
+            if (Service.hasValidatorErrors(req, res)) {
+                return;
+            }
             var category = new categorySchema;
             category.categoryName = req.body.categoryName
             category.userId = req.authUser._id
@@ -28,7 +31,13 @@ module.exports = {
     },
     updateCategory: async function (req, res) {
         try {
+            if (Service.hasValidatorErrors(req, res)) {
+                return;
+            }
             var category = await categorySchema.findOne({ _id: req.params.categoryId, isDeleted: false })
+            if (!category) {
+                return send(res, HttpStatus.SUCCESS_CODE, HttpStatus.SUCCESS_CODE, Message.CATEGORY_NOT_FOUND, null);
+            }
             category.categoryName = req.body.categoryName
             category.save()
             return send(res, HttpStatus.SUCCESS_CODE, HttpStatus.SUCCESS_CODE, Message.CATEGORY_UPDATED, {
@@ -41,7 +50,13 @@ module.exports = {
     },
     getCategory: async function (req, res) {
         try {
+            if (Service.hasValidatorErrors(req, res)) {
+                return;
+            }
             var category = await categorySchema.findOne({ _id: req.params.categoryId, isDeleted: false })
+            if (!category) {
+                return send(res, HttpStatus.SUCCESS_CODE, HttpStatus.SUCCESS_CODE, Message.CATEGORY_NOT_FOUND, null);
+            }
             return send(res, HttpStatus.SUCCESS_CODE, HttpStatus.SUCCESS_CODE, Message.CATEGORY_LIST, {
                 categoryName: category.categoryName
             });
@@ -52,7 +67,13 @@ module.exports = {
     },
     deleteCategory: async function (req, res) {
         try {
+            if (Service.hasValidatorErrors(req, res)) {
+                return;
+            }
             var category = await categorySchema.findOne({ _id: req.params.categoryId, isDeleted: false })
+            if (!category) {
+                return send(res,  HttpStatus.SUCCESS_CODE, HttpStatus.SUCCESS_CODE, Message.CATEGORY_NOT_FOUND, null);
+            }
             category.isDeleted = true
             await category.save()
             return send(res, HttpStatus.SUCCESS_CODE, HttpStatus.SUCCESS_CODE, Message.CATEGORY_DELETED, null);
@@ -63,6 +84,9 @@ module.exports = {
     },
     addSubCategory: async function (req, res) {
         try {
+            if (Service.hasValidatorErrors(req, res)) {
+                return;
+            }
             var category = new subCategorySchema;
             category.subCategoryName = req.body.subCategoryName
             category.userId = req.authUser._id
@@ -77,7 +101,13 @@ module.exports = {
     },
     updateSubCategory: async function (req, res) {
         try {
+            if (Service.hasValidatorErrors(req, res)) {
+                return;
+            }
             var category = await subCategorySchema.findOne({ _id: req.params.subCategoryId, isDeleted: false })
+            if (!category) {
+                return send(res, HttpStatus.SUCCESS_CODE, HttpStatus.SUCCESS_CODE, Message.CATEGORY_NOT_FOUND, null);
+            }
             category.subCategoryName = req.body.subCategoryName
             category.save()
             return send(res, HttpStatus.SUCCESS_CODE, HttpStatus.SUCCESS_CODE, Message.CATEGORY_UPDATED, {
@@ -90,7 +120,13 @@ module.exports = {
     },
     getSubCategory: async function (req, res) {
         try {
+            if (Service.hasValidatorErrors(req, res)) {
+                return;
+            }
             var category = await subCategorySchema.findOne({ _id: req.params.subCategoryId, isDeleted: false })
+            if (!category) {
+                return send(res,  HttpStatus.SUCCESS_CODE, HttpStatus.SUCCESS_CODE, Message.CATEGORY_NOT_FOUND, null);
+            }
             return send(res, HttpStatus.SUCCESS_CODE, HttpStatus.SUCCESS_CODE, Message.CATEGORY_LIST, {
                 subCategoryName: category.subCategoryName
             });
@@ -101,7 +137,13 @@ module.exports = {
     },
     deleteSubCategory: async function (req, res) {
         try {
+            if (Service.hasValidatorErrors(req, res)) {
+                return;
+            }
             var category = await subCategorySchema.findOne({ _id: req.params.subCategoryId, isDeleted: false })
+            if (!category) {
+                return send(res, HttpStatus.SUCCESS_CODE, HttpStatus.SUCCESS_CODE, Message.CATEGORY_NOT_FOUND, null);
+            }
             category.isDeleted = true;
             category.save()
             return send(res, HttpStatus.SUCCESS_CODE, HttpStatus.SUCCESS_CODE, Message.CATEGORY_DELETED, {
@@ -129,7 +171,7 @@ module.exports = {
             var price = req.body.price
             var discount = req.body.discount
             newproduct.bestPrice = Service.price(price, discount)
-            // await newproduct.save()
+            await newproduct.save()
             if (req.files) {
                 const files = req.files.images
                 const folderName = newproduct._id.valueOf()
@@ -139,10 +181,10 @@ module.exports = {
                     }
                 })
                 var imageData = []
-                files.forEach(async (value , index) => {
+                files.forEach(async (value, index) => {
                     var fileName = value.name;
                     var Path = './uploads/' + folderName + '/' + fileName
-                    if (index < 2) {
+                    if (index < 5) {
                         value.mv(Path)
                         var data = {
                             image: Path,
@@ -244,12 +286,15 @@ module.exports = {
     },
     getproduct: async function (req, res) {
         try {
-            let product = await productSchema.find({ _id: req.params.productId, isDeleted: false })
+            if (Service.hasValidatorErrors(req, res)) {
+                return;
+            }
+            var product = await productSchema.findOne({ _id: req.params.productId, isDeleted: false })
                 .populate('categoryId')
                 .populate('subCategoryId')
                 .exec()
             if (!product) {
-                return send(res, ErrorCode.INVALID_CODE, HttpStatus.UNAUTHORIZED, Message.PRODUCT_NOT_FOUND, mainProduct);
+                return send(res, HttpStatus.SUCCESS_CODE, HttpStatus.SUCCESS_CODE, Message.PRODUCT_NOT_FOUND, null);
             }
 
             var mainProduct = []
@@ -282,9 +327,12 @@ module.exports = {
     },
     updateProduct: async function (req, res) {
         try {
+            if (Service.hasValidatorErrors(req, res)) {
+                return;
+            }
             var checkProduct = await productSchema.findOne({ _id: req.params.productId, isDeleted: false });
             if (!checkProduct) {
-                return send(res, ErrorCode.INVALID_CODE, HttpStatus.UNAUTHORIZED, Message.PRODUCT_NOT_FOUND, null);
+                return send(res, HttpStatus.SUCCESS_CODE, HttpStatus.SUCCESS_CODE, Message.PRODUCT_NOT_FOUND, null);
             }
             checkProduct.categoryId = req.body.categoryId
             checkProduct.subCategoryId = req.body.subCategoryId
@@ -304,7 +352,11 @@ module.exports = {
             for (let i = 0; i < img.length; i++) {
                 img[i].isDeleted = true
                 img[i].save()
-                fs.unlinkSync('./uploads/' + folderName + '/' + img[i].imageName)
+                fs.unlink('./uploads/' + folderName, (err) => {
+                    if (err) {
+                        console.log(err);
+                    }
+                })
             }
             if (req.files) {
                 const files = req.files.images
@@ -317,14 +369,14 @@ module.exports = {
                     })
                 }
                 var imageData = []
-                files.forEach(async (value , index) => {
+                files.forEach(async (value, index) => {
                     var fileName = value.name;
                     var Path = './uploads/' + folderName + '/' + fileName
-                    if (index < 2) {
+                    if (index < 5) {
                         value.mv(Path)
                         var data = {
                             image: Path,
-                            productId: newproduct._id
+                            productId: checkProduct._id
                         }
                         imageData.push(data)
                     }
@@ -345,13 +397,17 @@ module.exports = {
     },
     deleteProduct: async function (req, res) {
         try {
+            if (Service.hasValidatorErrors(req, res)) {
+                return;
+            }
             var checkProduct = await productSchema.findOne({ _id: req.params.productId, isDeleted: false });
             if (!checkProduct) {
-                return send(res, ErrorCode.INVALID_CODE, HttpStatus.UNAUTHORIZED, Message.PRODUCT_NOT_FOUND, null);
+                return send(res,  HttpStatus.SUCCESS_CODE, HttpStatus.SUCCESS_CODE, Message.PRODUCT_NOT_FOUND, null);
             }
             checkProduct.isDeleted = true
             checkProduct.save()
-            var img = imageSchema.findOne({ productId: req.params.productId, isDeleted: false });
+            var img =await imageSchema.find({ productId: req.params.productId, isDeleted: false });
+            console.log(img);
             for (let i = 0; i < img.length; i++) {
                 img[i].isDeleted = true
                 img[i].save()
@@ -370,7 +426,7 @@ module.exports = {
             }
             var product = await productSchema.findOne({ _id: req.body.productId, isDeleted: false })
             if (!product) {
-                return send(res, ErrorCode.INVALID_CODE, HttpStatus.UNAUTHORIZED, Message.PRODUCT_NOT_FOUND, null);
+                return send(res,  HttpStatus.SUCCESS_CODE, HttpStatus.SUCCESS_CODE, Message.PRODUCT_NOT_FOUND, null);
             }
             var wishProduct = new wishListSchema
             wishProduct.userId = req.authUser._id
@@ -387,11 +443,10 @@ module.exports = {
             var ids = []
             var product = await wishListSchema.find({ userId: req.authUser._id, isDeleted: false })
             if (!product) {
-                return send(res, ErrorCode.INVALID_CODE, HttpStatus.UNAUTHORIZED, Message.WISHLIST_EMPTY, null);
+                return send(res, HttpStatus.SUCCESS_CODE, HttpStatus.SUCCESS_CODE, Message.WISHLIST_EMPTY, null);
             }
             for (let i = 0; i < product.length; i++) {
                 var data = product[i].productId
-
                 ids.push(data)
             }
             var product = await productSchema.aggregate([
@@ -432,9 +487,6 @@ module.exports = {
                     },
                 },
             ])
-            if (!product) {
-                return send(res, ErrorCode.INVALID_CODE, HttpStatus.UNAUTHORIZED, Message.PRODUCT_NOT_FOUND, null);
-            }
             var listProduct = []
             for (let i = 0; i < product.length; i++) {
                 var id = product[i]._id;
@@ -468,9 +520,12 @@ module.exports = {
     },
     deleteWishList: async function (req, res) {
         try {
+            if (Service.hasValidatorErrors(req, res)) {
+                return;
+            }
             var product = await wishListSchema.findOne({ _id: req.params.wishListId, isDeleted: false })
             if (!product) {
-                return send(res, ErrorCode.INVALID_CODE, HttpStatus.UNAUTHORIZED, Message.PRODUCT_NOT_FOUND, null);
+                return send(res,  HttpStatus.SUCCESS_CODE, HttpStatus.SUCCESS_CODE, Message.PRODUCT_NOT_FOUND, null);
             }
             product.isDeleted = true
             product.save()
@@ -506,15 +561,15 @@ module.exports = {
     },
     getReview: async function (req, res) {
         try {
+            if (Service.hasValidatorErrors(req, res)) {
+                return;
+            }
             var review = await reviewSchema.find({ productId: req.params.productId, isDeleted: false }, {
                 star: 1,
                 name: 1,
                 title: 1,
                 details: 1,
             })
-            if (!review) {
-                return send(res, ErrorCode.INVALID_CODE, HttpStatus.UNAUTHORIZED, Message.REVIEW_NOT_FOUND, null);
-            }
             return send(res, HttpStatus.SUCCESS_CODE, HttpStatus.SUCCESS_CODE, Message.REVIEW_LIST_SUCCESS, review);
         } catch (error) {
             console.log('error', error);
@@ -523,9 +578,12 @@ module.exports = {
     },
     deleteReview: async function (req, res) {
         try {
+            if (Service.hasValidatorErrors(req, res)) {
+                return;
+            }
             var review = await reviewSchema.findOne({ _id: req.params.reviewId, isDeleted: false })
             if (!review) {
-                return send(res, ErrorCode.INVALID_CODE, HttpStatus.UNAUTHORIZED, Message.REVIEW_NOT_FOUND, null);
+                return send(res,  HttpStatus.SUCCESS_CODE, HttpStatus.SUCCESS_CODE, Message.REVIEW_NOT_FOUND, null);
             }
             review.isDeleted = true
             review.save()
