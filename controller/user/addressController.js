@@ -1,11 +1,22 @@
-const addressSchema = require("../models/address");
-const Service = require("../helper/index");
+const addressSchema = require("../../models/address");
+const Service = require("../../helper/index");
 const send = Service.sendResponse;
-const { HttpStatus } = require("../helper/enum")
-const { Message } = require("../helper/localization")
+const { HttpStatus } = require("../../helper/enum")
+const { Message } = require("../../helper/localization")
 
 module.exports = {
-
+    /**
+     * This function is use for add address
+      @body {} req.body.firstName
+      @body {} req.body.lastName
+      @body {} req.body.address
+      @body {} req.body.landMark
+      @body {} req.body.city
+      @body {} req.body.state
+      @body {} req.body.pincode
+      @body {} res
+     * @returns
+     */
     addAddress: async function (req, res) {
         try {
             if (Service.hasValidatorErrors(req, res)) {
@@ -21,7 +32,7 @@ module.exports = {
             newAddress.city = req.body.city
             newAddress.state = req.body.state
             newAddress.pincode = req.body.pincode
-            var mark = await addressSchema.updateMany({ userId: req.authUser._id }, { $set: { mark: false } })
+            await addressSchema.updateMany({ userId: req.authUser._id }, { $set: { mark: false } })
             newAddress.mark = true
             await newAddress.save()
             return send(res, HttpStatus.SUCCESS_CODE, HttpStatus.SUCCESS_CODE, Message.ADDRESS_ADD_SUCCESS, {
@@ -39,6 +50,11 @@ module.exports = {
             return send(res, HttpStatus.INTERNAL_SERVER_CODE, HttpStatus.INTERNAL_SERVER_CODE, Message.SOMETHING_WENT_WRONG);
         }
     },
+    /**
+     * This function is use for list address
+      @body {} res
+     * @returns
+     */
     listAddress: async function (req, res) {
         try {
             var userAddress = await addressSchema.find({ phone: req.authUser.phone, isDeleted: false }, {
@@ -62,6 +78,12 @@ module.exports = {
             return send(res, HttpStatus.INTERNAL_SERVER_CODE, HttpStatus.INTERNAL_SERVER_CODE, Message.SOMETHING_WENT_WRONG);
         }
     },
+    /**
+     * This function is use for list address
+      @params {} req.params.addressId
+      @body {} res
+     * @returns
+     */
     getAddress: async function (req, res) {
         try {
             if (Service.hasValidatorErrors(req, res)) {
@@ -88,6 +110,19 @@ module.exports = {
             return send(res, HttpStatus.INTERNAL_SERVER_CODE, HttpStatus.INTERNAL_SERVER_CODE, Message.SOMETHING_WENT_WRONG);
         }
     },
+    /**
+     * This function is use for update address
+      @params {} req.params.addressId
+      @body {} req.body.firstName
+      @body {} req.body.lastName
+      @body {} req.body.address
+      @body {} req.body.landMark
+      @body {} req.body.city
+      @body {} req.body.state
+      @body {} req.body.pincode
+      @body {} res
+     * @returns
+     */
     updateAddress: async function (req, res) {
         try {
             if (Service.hasValidatorErrors(req, res)) {
@@ -125,6 +160,12 @@ module.exports = {
             return send(res, HttpStatus.INTERNAL_SERVER_CODE, HttpStatus.INTERNAL_SERVER_CODE, Message.SOMETHING_WENT_WRONG);
         }
     },
+    /**
+     * This function is use for delete address
+      @params {} req.params.addressId
+      @body {} res
+     * @returns
+     */
     deleteAddress: async function (req, res) {
         try {
             if (Service.hasValidatorErrors(req, res)) {

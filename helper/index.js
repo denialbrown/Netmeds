@@ -3,14 +3,14 @@ const { validationResult } = require("express-validator");
 const moment = require("moment");
 const otpGenerator = require('otp-generator')
 const { Action } = require("../helper/localization")
-const LOGIN_TOKEN_EXPIRES_IN = 10 * 60 * 1000;
+const LOGIN_TOKEN_EXPIRES_IN = '30d';
 const jwt = require("jsonwebtoken");
 var sid = process.env.SID_KEY;
 var auth_token = process.env.AUTH_TOKEN;
 var twilio = require("twilio")(sid, auth_token);
 const userSchema = require("../models/user")
-
-
+const date = require('date-and-time');
+const now = new Date();
 
 module.exports = {
     sendResponse(res, status, code, message, payload) {
@@ -36,6 +36,10 @@ module.exports = {
     },
     getCurrentTimeStampWithAdditionMinutes: function (minutes) {
         return moment().add(minutes, "minutes").unix();
+    },
+    getCurrentTimeAndDate: function () {
+        
+        return date.format(now, 'DD MMMM,YYYY at HH:mm');
     },
     generateOneTimePassword: async function (length) {
 

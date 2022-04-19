@@ -67,6 +67,15 @@ const Message ={
     REVIEW_NOT_FOUND:"review not found",
     WHO_ARE_YOU:"who are you",
     ADDRESS_ID_IS_REQUIRED:"address id is reqiured",
+    PRODUCT_ADDED_CART:"product alredy added to cart",
+    PRODUCT_ADD_CART:"product added to cart",
+    CART_ID_INVALID:"cart id is invalid",
+    QTY_IS_INVALID:"enter valid quantity",
+    CART_LIST:"cart listed sucessfully",
+    CART_PRODUCT_NOT_FOUND:"cart product not found",
+    CART_EMPTY:"your cart is empty",
+    CART_UPADTE:"cart updated sucessfully",
+    CART_PRODUCT_DELETE:"cart product sucessfully deleted",
 }
 
 

@@ -1,12 +1,17 @@
-const userSchema = require("../models/user");
-const Service = require("../helper/index");
+const userSchema = require("../../models/user");
+const Service = require("../../helper/index");
 const send = Service.sendResponse;
-const { ErrorCode, HttpStatus } = require("../helper/enum")
-const { Message } = require("../helper/localization")
+const { ErrorCode, HttpStatus } = require("../../helper/enum")
+const { Message } = require("../../helper/localization")
 const jwt_decode = require("jwt-decode");
 
 module.exports = {
-
+     /**
+     * This function is use for signup/login for user 
+      @params {} req.body.phone
+      @body {} res
+     * @returns
+     */
     signupUser: async function (req, res) {
         try {
             if (Service.hasValidatorErrors(req, res)) {
@@ -45,6 +50,13 @@ module.exports = {
             return send(res, HttpStatus.INTERNAL_SERVER_CODE, HttpStatus.INTERNAL_SERVER_CODE, Message.SOMETHING_WENT_WRONG, null);
         }
     },
+    /**
+     * This function is use for signup/login verify user 
+      @body {} req.body.token
+      @body {} req.body.otp
+      @body {} res
+     * @returns
+     */
     verifyUser: async function (req, res) {
         try {
             if (Service.hasValidatorErrors(req, res)) {
@@ -60,14 +72,13 @@ module.exports = {
                 return send(res, HttpStatus.UNAUTHORIZED, ErrorCode.INVALID_CODE, Message.TOKEN_INVALID, null);
             }
             var loginTime = await Service.getCurrentTimeStampUnix(0);
-            if (user.otp != req.body.otp || user.otpCreatedAt < loginTime) {
+            if (user.otp != req.body.otp || user.otpCreatedAt > loginTime) {
                 return send(res, HttpStatus.UNAUTHORIZED, ErrorCode.INVALID_CODE, Message.OTP_INVALID);
             }
             user.otp = ""
             user.otpCreatedAt = ""
             user.otpVerified = true
             await user.save()
-            console.log(user);
             const data = {
                 loginToken: await Service.generateToken(user),
             };
@@ -78,79 +89,106 @@ module.exports = {
             return send(res, HttpStatus.INTERNAL_SERVER_CODE, HttpStatus.INTERNAL_SERVER_CODE, Message.SOMETHING_WENT_WRONG, null);
         }
     },
+    /**
+     * This function is use for add user profile 
+      @body {} req.body.firstName
+      @body {} req.body.lastName
+      @body {} req.body.email
+      @body {} req.body.gender
+      @body {} req.body.age
+      @body {} res
+     * @returns
+     */
     userProfile: async function (req, res) {
         try {
             if (Service.hasValidatorErrors(req, res)) {
                 return;
             }
-            var user = req.authUser
-            user.firstName = req.body.firstName
-            user.lastName = req.body.lastName
-            user.email = req.body.email
-            user.gender = req.body.gender
-            user.age = req.body.age
-            user.save()
+            req.authUser.firstName = req.body.firstName
+            req.authUser.lastName = req.body.lastName
+            req.authUser.email = req.body.email
+            req.authUser.gender = req.body.gender
+            req.authUser.age = req.body.age
+            req.authUser.save()
             return send(res, HttpStatus.SUCCESS_CODE, HttpStatus.SUCCESS_CODE, Message.USER_SIGNUP_SUCCESS, {
-                id: user._id,
-                firstName: user.firstName,
-                lastName: user.lastName,
-                email: user.email,
-                gender: user.gender,
-                phone: user.phone,
-                age: user.age,
+                id: req.authUser._id,
+                firstName: req.authUser.firstName,
+                lastName: req.authUser.lastName,
+                email: req.authUser.email,
+                gender: req.authUser.gender,
+                phone: req.authUser.phone,
+                age: req.authUser.age,
             });
         } catch (error) {
             console.log('error', error);
             return send(res, HttpStatus.INTERNAL_SERVER_CODE, HttpStatus.INTERNAL_SERVER_CODE, Message.SOMETHING_WENT_WRONG, null);
         }
     },
+    /**
+     * This function is use for list user profile 
+      @body {} res
+     * @returns
+     */
     getUserProfile: async function (req, res) {
         try {
-            var user = req.authUser
             return send(res, HttpStatus.SUCCESS_CODE, HttpStatus.SUCCESS_CODE, Message.USER_SIGNUP_SUCCESS, {
-                firstName: user.firstName,
-                lastName: user.lastName,
-                phone: user.phone,
-                email: user.email,
-                gender: user.gender,
-                age: user.age,
+                firstName: req.authUser.firstName,
+                lastName: req.authUser.lastName,
+                phone: req.authUser.phone,
+                email: req.authUser.email,
+                gender: req.authUser.gender,
+                age: req.authUser.age,
             });
         } catch (error) {
             console.log('error', error);
             return send(res, HttpStatus.INTERNAL_SERVER_CODE, HttpStatus.INTERNAL_SERVER_CODE, Message.SOMETHING_WENT_WRONG, null);
         }
     },
+    /**
+     * This function is use for update user profile 
+      @body {} req.body.firstName
+      @body {} req.body.lastName
+      @body {} req.body.email
+      @body {} req.body.gender
+      @body {} req.body.age
+      @body {} res
+     * @returns
+     */
     updateProfile: async function (req, res) {
         try {
             if (Service.hasValidatorErrors(req, res)) {
                 return;
             }
-            var user = req.authUser
-            user.firstName = req.body.firstName
-            user.lastName = req.body.lastName
-            user.gender = req.body.gender
-            user.age = req.body.age
-            if(user.phone == undefined){
-                user.phone = req.body.phone
+            req.authUser.firstName = req.body.firstName
+            req.authUser.lastName = req.body.lastName
+            req.authUser.gender = req.body.gender
+            req.authUser.age = req.body.age
+            if(req.authUser.phone == undefined){
+                req.authUser.phone = req.body.phone
             }
-            if(user.email == undefined){
-                user.email =req.body.email
+            if(req.authUser.email == undefined){
+                req.authUser.email =req.body.email
             }
-            user.save()
-            console.log(user);
+            req.authUser.save()
             return send(res, HttpStatus.SUCCESS_CODE, HttpStatus.SUCCESS_CODE, Message.USER_SIGNUP_SUCCESS, {
-                firstName: user.firstName,
-                lastName: user.lastName,
-                phone: user.phone,
-                email: user.email,
-                gender: user.gender,
-                age: user.age,
+                firstName: req.authUser.firstName,
+                lastName: req.authUser.lastName,
+                phone: req.authUser.phone,
+                email: req.authUser.email,
+                gender: req.authUser.gender,
+                age: req.authUser.age,
             });
         } catch (error) {
             console.log('error', error);
             return send(res, HttpStatus.INTERNAL_SERVER_CODE, HttpStatus.INTERNAL_SERVER_CODE, Message.SOMETHING_WENT_WRONG, null);
         }
     },
+    /**
+     * This function is use for update user profile 
+      @body {} req.body.token
+      @body {} res
+     * @returns
+     */
     signupgoogle: async function (req, res) {
         try {
             if (Service.hasValidatorErrors(req, res)) {
