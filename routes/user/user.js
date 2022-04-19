@@ -1,9 +1,9 @@
 const express = require('express');
 const router = express.Router();
-const userController = require("../controller/userController");
+const userController = require("../../controller/user/userController");
 const { body } = require("express-validator");
-let { Message } = require("../helper/localization");
-const middleware = require("../helper/middleware")
+let { Message } = require("../../helper/localization");
+const middleware = require("../../helper/middleware")
 
 router.post("/signup-signIn",
     body("phone").exists().isMobilePhone().isLength(10).withMessage(Message.INVALID_PHONE_NUMBER).not().isEmpty(),

@@ -12,9 +12,15 @@ app.use(express.urlencoded({
     extended: true
 }));
 app.use(fileupload())
-app.use('/api', require("./routes/user"));
-app.use('/api', require("./routes/address"));
-app.use('/api', require("./routes/product"));
+app.use('/api', require("./routes/user/cart"));
+app.use('/api', require("./routes/user/review"));
+app.use('/api', require("./routes/user/search"));
+app.use('/api', require("./routes/user/wishlist"));
+app.use('/api', require("./routes/user/address"));
+app.use('/api', require("./routes/user/user"));
+app.use('/api', require("./routes/admin/product"));
+app.use('/api', require("./routes/admin/category"));
+app.use('/api', require("./routes/admin/subcategory"));
 app.use("/uploads", express.static("./uploads"));
 
 const swaggerDefinition = {
@@ -43,7 +49,7 @@ const swaggerDefinition = {
 
 const options = {
     swaggerDefinition,
-    apis: ['./swaggerDocuments/*.js'],
+    apis: ['./swaggerDocuments/admin/*.js','./swaggerDocuments/user/*.js'],
 };
 
 const swaggerSpec = swaggerJSDoc(options);

@@ -7,7 +7,10 @@ const imageSchema = new mongoose.Schema({
         type: String,
     },
     productId: {
-        type: mongoose.Schema.Types.ObjectId
+        type: mongoose.Schema.Types.ObjectId,
+    },
+    marked:{
+        type:String,
     },
     status: {
         type: String,

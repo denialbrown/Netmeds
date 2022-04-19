@@ -1,8 +1,8 @@
 const express = require('express');
 const router = express.Router();
-const addressController = require("../controller/addressController");
-const middleware = require("../helper/middleware")
-let { Message } = require("../helper/localization");
+const addressController = require("../../controller/user/addressController");
+const middleware = require("../../helper/middleware")
+let { Message } = require("../../helper/localization");
 const { body, param } = require("express-validator");
 
 router.post("/add/address", [middleware.authenticateUser],
@@ -19,7 +19,7 @@ router.post("/add/address", [middleware.authenticateUser],
 router.get("/get/address", [middleware.authenticateUser], addressController.listAddress);
 
 router.get("/getaddress/:addressId", [middleware.authenticateUser],
-    body("addressId").exists().isMongoId().withMessage(Message.INVALID_ADDRESS_ID).not().isEmpty(),
+    param("addressId").exists().isMongoId().withMessage(Message.INVALID_ADDRESS_ID).not().isEmpty(),
     addressController.getAddress);
 
 router.post("/update/address/:addressId", [middleware.authenticateUser],
