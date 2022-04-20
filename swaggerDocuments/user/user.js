@@ -1,6 +1,6 @@
 /**
  * @swagger
- * /signup-signIn:
+ * /signup:
  *   post:
  *     summary: signup-signIn with phone 
  *     tags: [authUser]
@@ -11,12 +11,15 @@
  *           schema:
  *             type: object
  *             properties:
+ *               countryCode:
+ *                 type: string
+ *                 example: +91
  *               phone:
  *                 type: string
  *                 example: 9898989898
  *     responses:
  *       200:
- *         description: success
+ *         description: login sucessfully
  *         content:
  *           application/json:
  *             schema:
@@ -24,8 +27,10 @@
  *               properties:
  *                 responseCode:
  *                   type: integer
+ *                   example: 200
  *                 responseMessage:
  *                    type: string
+ *                    example: login sucessfully
  *                 responseData:
  *                   type: object
  *                   properties:
@@ -47,7 +52,7 @@
 
 /**
  * @swagger
- * /signup-signIn/verify:
+ * /otp/verify:
  *   post:
  *     summary: signup-signIn verify with otp 
  *     tags: [authUser]
@@ -66,7 +71,7 @@
  *                 example: 1111
  *     responses:
  *       200:
- *         description: success
+ *         description: login sucessfully
  *         content:
  *           application/json:
  *             schema:
@@ -74,8 +79,10 @@
  *               properties:
  *                 responseCode:
  *                   type: integer
+ *                   example: 200
  *                 responseMessage:
  *                    type: string
+ *                    example: login sucessfully
  *                 responseData:
  *                   type: object
  *                   properties:
@@ -199,7 +206,7 @@
  *        default: 9067b6a045f321090ea476eaec169002c5e335a540cd77b5726c7547b2bf5209 
  *     responses:
  *       200:
- *         description: user profile 
+ *         description: get user profile sucessfully
  *         content:
  *           application/json:
  *             schema:
@@ -207,8 +214,10 @@
  *               properties:
  *                 responseCode:
  *                   type: integer
+ *                   example: 200
  *                 responseMessage:
- *                    type: string
+ *                   type: string
+ *                   example: get user profile sucessfully
  *                 responseData:
  *                   type: object
  *                   properties:
@@ -221,11 +230,11 @@
  *                     gender:
  *                       type: string
  *                       example: male  
- *                     age:
+ *                     dateOfBirth:
  *                       type: string
- *                       example:  20
+ *                       example:  dd/mm/yyyy
  *       500:
- *         description: signup failed
+ *         description: get user profile failed
  *         content:
  *           application/json:
  *             schema:
@@ -272,9 +281,9 @@
  *                 gender:
  *                   type: string
  *                   example: male  
- *                 age:
+ *                 dateOfBirth:
  *                   type: string
- *                   example:  20
+ *                   example:  dd/mm/yyyy
  *                 phone:
  *                   type: string
  *                   example: 9898989898  
@@ -283,7 +292,7 @@
  *                   example:  abc@gmail.com
  *     responses:
  *       200:
- *         description: signup success
+ *         description: address updated sucessfully
  *         content:
  *           application/json:
  *             schema:
@@ -291,25 +300,18 @@
  *               properties:
  *                 responseCode:
  *                   type: integer
+ *                   example: 200
  *                 responseMessage:
- *                    type: string
+ *                   type: string
+ *                   example: address updated sucessfully
  *                 responseData:
  *                   type: object
  *                   properties:
- *                     firstname:
+ *                     id:
  *                       type: string
- *                       example: abc
- *                     lastName:
- *                       type: string
- *                       example: xyz 
- *                     gender:
- *                       type: string
- *                       example: male  
- *                     age:
- *                       type: string
- *                       example:  20
+ *                       example: 62395a01adb56e8f5964ea45
  *       500:
- *         description: signup failed
+ *         description: address update failed
  *         content:
  *           application/json:
  *             schema:
@@ -318,7 +320,7 @@
  *                 responsecode:
  *                   type: integer
  *                 responseMessage:
- *                    type: string
+ *                   type: string
  */
 /**
  * @swagger
@@ -338,7 +340,7 @@
  *                   example: abc 
  *     responses:
  *       200:
- *         description: signup success
+ *         description: signup with google sucessfully
  *         content:
  *           application/json:
  *             schema:
@@ -346,15 +348,18 @@
  *               properties:
  *                 responseCode:
  *                   type: integer
+ *                   example: 200
  *                 responseMessage:
- *                    type: string
+ *                   type: string
+ *                   example: signup with google sucessfully
  *                 responseData:
  *                   type: object
  *                   properties:
- *                     token:
+ *                     loginToken:
  *                       type: string
+ *                       example: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiI2MjE1Y2I3NjAxZDg2OTJhZjkzMGVkMTkiLCJhY3Rpb24iOiJhY2Nlc3MiLCJpYXQiOjE2NDU1OTc4MTksImV4cCI6MTY0NTY0MTAxOX0.Zve63LUqIOh3lwhBfgQLbVE73PgbaY0tCPQ7y2vQVsk
  *       500:
- *         description: signup failed
+ *         description: signup with google failed
  *         content:
  *           application/json:
  *             schema:
@@ -363,5 +368,5 @@
  *                 responsecode:
  *                   type: integer
  *                 responseMessage:
- *                    type: string
+ *                   type: string
  */

@@ -30,7 +30,7 @@
  *                 example: 624ee4b0f743d56f49901b41
  *     responses:
  *       200:
- *         description: success
+ *         description: cart product updated sucessfully
  *         content:
  *           application/json:
  *             schema:
@@ -38,16 +38,18 @@
  *               properties:
  *                 responseCode:
  *                   type: integer
+ *                   example: 200
  *                 responseMessage:
- *                    type: string
+ *                   type: string
+ *                   example: cart product updated sucessfully
  *                 responseData:
  *                   type: object
  *                   properties:
- *                     categoryName:
+ *                     id:
  *                       type: string
- *                       example: abc
+ *                       example: 62395a01adb56e8f5964ea45
  *       500:
- *         description: failed
+ *         description: cart product update failed
  *         content:
  *           application/json:
  *             schema:
@@ -56,7 +58,7 @@
  *                 responsecode:
  *                   type: integer
  *                 responseMessage:
- *                    type: string
+ *                   type: string
  */
 /**
  * @swagger
@@ -79,7 +81,7 @@
  *        default: 9067b6a045f321090ea476eaec169002c5e335a540cd77b5726c7547b2bf5209
  *     responses:
  *       200:
- *         description: success
+ *         description: list cart product sucessfully
  *         content:
  *           application/json:
  *             schema:
@@ -87,16 +89,45 @@
  *               properties:
  *                 responseCode:
  *                   type: integer
+ *                   example: 200
  *                 responseMessage:
- *                    type: string
+ *                   type: string
+ *                   example: list cart products sucessfully
  *                 responseData:
  *                   type: object
  *                   properties:
- *                     categoryName:
+ *                     categoryId:
  *                       type: string
- *                       example: abc
+ *                       example:  id
+ *                     subCategoryId:
+ *                       type: string
+ *                       example: id
+ *                     image:
+ *                       type: string
+ *                       example: path 
+ *                     productName:
+ *                       type: string
+ *                       example: abc 
+ *                     details:
+ *                       type: string
+ *                       example: xyz
+ *                     price:
+ *                       type: Number
+ *                       example: 999  
+ *                     pricedetails:
+ *                       type: Number
+ *                       example:  20
+ *                     MRPTotal:
+ *                       type: Number
+ *                       example: 5000
+ *                     NetmedsDiscount:
+ *                       type: Number
+ *                       example: 999  
+ *                     TotalAmount:
+ *                       type: Number
+ *                       example:  4000
  *       500:
- *         description: failed
+ *         description: list cart products failed
  *         content:
  *           application/json:
  *             schema:
@@ -105,7 +136,7 @@
  *                 responsecode:
  *                   type: integer
  *                 responseMessage:
- *                    type: string
+ *                   type: string
  */
 /**
  * @swagger
@@ -137,12 +168,12 @@
  *           schema:
  *             type: object
  *             properties:
- *               qty:
+ *               quantity:
  *                 type: string
  *                 example: 2
  *     responses:
  *       200:
- *         description: success
+ *         description: cart product updated sucessfully
  *         content:
  *           application/json:
  *             schema:
@@ -150,16 +181,18 @@
  *               properties:
  *                 responseCode:
  *                   type: integer
+ *                   example: 200
  *                 responseMessage:
- *                    type: string
+ *                   type: string
+ *                   example: cart product updated sucessfully
  *                 responseData:
  *                   type: object
  *                   properties:
- *                     categoryName:
+ *                     id:
  *                       type: string
- *                       example: abc
+ *                       example: 62395a01adb56e8f5964ea45
  *       500:
- *         description: failed
+ *         description: cart product add failed
  *         content:
  *           application/json:
  *             schema:
@@ -168,7 +201,7 @@
  *                 responsecode:
  *                   type: integer
  *                 responseMessage:
- *                    type: string
+ *                   type: string
  */
 /**
  * @swagger
@@ -193,7 +226,7 @@
  *        name: cartId
  *     responses:
  *       200:
- *         description: success
+ *         description:  cart product deleted sucessfully
  *         content:
  *           application/json:
  *             schema:
@@ -201,12 +234,12 @@
  *               properties:
  *                 responseCode:
  *                   type: integer
+ *                   example: 200
  *                 responseMessage:
- *                    type: string
- *                 responseData:
  *                   type: string
+ *                   example:  cart product deleted sucessfully
  *       500:
- *         description: failed
+ *         description:  cart product delete failed
  *         content:
  *           application/json:
  *             schema:
@@ -215,5 +248,5 @@
  *                 responsecode:
  *                   type: integer
  *                 responseMessage:
- *                    type: string
+ *                   type: string
  */

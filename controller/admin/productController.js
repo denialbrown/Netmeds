@@ -2,7 +2,7 @@ const productSchema = require("../../models/product");
 const imageSchema = require("../../models/image");
 const Service = require("../../helper/index");
 const send = Service.sendResponse;
-const { HttpStatus } = require("../../helper/enum")
+const { HttpStatus, ErrorCode } = require("../../helper/enum")
 const { Message } = require("../../helper/localization");
 const fs = require('fs');
 var mongoose = require('mongoose');
@@ -10,15 +10,15 @@ var mongoose = require('mongoose');
 module.exports = {
     /**
      * This function is use for add product
-      @body {} req.body.categoryId
-      @body {} req.body.subCategoryId
-      @body {} req.body.productName
-      @body {} req.body.details
-      @body {} req.body.price
-      @body {} req.body.discount
-      @body {} req.body.manufacture
-      @body {} req.files
-      @body {} res
+     * @body {} req.body.categoryId
+     * @body {} req.body.subCategoryId
+     * @body {} req.body.productName
+     * @body {} req.body.details
+     * @body {} req.body.price
+     * @body {} req.body.discount
+     * @body {} req.body.manufacture
+     * @body {} req.files
+     * @body {} res
      * @returns
      */
     addProduct: async function (req, res) {
@@ -73,21 +73,16 @@ module.exports = {
                 await imageSchema.insertMany(imageData)
             }
             return send(res, HttpStatus.SUCCESS_CODE, HttpStatus.SUCCESS_CODE, Message.PRODUCT_ADD_SUCCESS, {
-                productName: newproduct.productName,
-                details: newproduct.details,
-                price: newproduct.price,
-                discount: newproduct.discount,
-                manufacture: newproduct.manufacture,
-                bestPrice: newproduct.bestPrice,
+                id: newproduct._id
             });
         } catch (error) {
-            console.log('error', error);
+            console.log('addProduct', error);
             return send(res, HttpStatus.INTERNAL_SERVER_CODE, HttpStatus.INTERNAL_SERVER_CODE, Message.SOMETHING_WENT_WRONG, null);
         }
     },
     /**
      * This function is use for list category
-      @body {} res
+     * @body {} res
      * @returns
      */
     listProduct: async function (req, res) {
@@ -149,15 +144,15 @@ module.exports = {
             ])
             return send(res, HttpStatus.SUCCESS_CODE, HttpStatus.SUCCESS_CODE, Message.PRODUCT_LIST, product);
         } catch (error) {
-            console.log('error', error);
+            console.log('listProduct', error);
             return send(res, HttpStatus.INTERNAL_SERVER_CODE, HttpStatus.INTERNAL_SERVER_CODE, Message.SOMETHING_WENT_WRONG, null);
         }
     },
     /**
      * This function is use for list category
-      @params {} req.params.productId
-      @body {} res
-     * @returns
+     * @params {} req.params.productId
+     * @body {} res
+     ** @returns
      */
     getproduct: async function (req, res) {
         try {
@@ -213,22 +208,22 @@ module.exports = {
             ])
             return send(res, HttpStatus.SUCCESS_CODE, HttpStatus.SUCCESS_CODE, Message.PRODUCT_LIST, product);
         } catch (error) {
-            console.log('error', error);
+            console.log('getproduct', error);
             return send(res, HttpStatus.INTERNAL_SERVER_CODE, HttpStatus.INTERNAL_SERVER_CODE, Message.SOMETHING_WENT_WRONG, null);
         }
     },
     /**
      * This function is use for update product
-      @params {} req.params.productId
-      @body {} req.body.categoryId
-      @body {} req.body.subCategoryId
-      @body {} req.body.productName
-      @body {} req.body.details
-      @body {} req.body.price
-      @body {} req.body.discount
-      @body {} req.body.manufacture
-      @body {} req.files
-      @body {} res
+     * @params {} req.params.productId
+     * @body {} req.body.categoryId
+     * @body {} req.body.subCategoryId
+     * @body {} req.body.productName
+     * @body {} req.body.details
+     * @body {} req.body.price
+     * @body {} req.body.discount
+     * @body {} req.body.manufacture
+     * @body {} req.files
+     * @body {} res
      * @returns
      */
     updateProduct: async function (req, res) {
@@ -238,7 +233,7 @@ module.exports = {
             }
             var checkProduct = await productSchema.findOne({ _id: req.params.productId, isDeleted: false });
             if (!checkProduct) {
-                return send(res, HttpStatus.SUCCESS_CODE, HttpStatus.SUCCESS_CODE, Message.PRODUCT_NOT_FOUND, null);
+                return send(res, HttpStatus.BAD_REQUEST_STATUS_CODE, ErrorCode.REQUIRED_CODE, Message.PRODUCT_NOT_FOUND, null);
             }
             checkProduct.categoryId = req.body.categoryId
             checkProduct.subCategoryId = req.body.subCategoryId
@@ -299,22 +294,19 @@ module.exports = {
 
             }
             return send(res, HttpStatus.SUCCESS_CODE, HttpStatus.SUCCESS_CODE, Message.PRODUCT_UPDATE_SUCCESS, {
-                productName: checkProduct.productName,
-                details: checkProduct.details,
-                price: checkProduct.price,
-                pricedetails: checkProduct.pricedetails,
+                id: checkProduct._id
             });
         } catch (error) {
-            console.log('error', error);
+            console.log('updateProduct', error);
             return send(res, HttpStatus.INTERNAL_SERVER_CODE, HttpStatus.INTERNAL_SERVER_CODE, Message.SOMETHING_WENT_WRONG, null);
         }
     },
-     /**
-     * This function is use for delete category
-      @params {} req.params.productId
-      @body {} res
-     * @returns
-     */
+    /**
+    * This function is use for delete category
+    * @params {} req.params.productId
+    * @body {} res
+    * @returns
+    */
     deleteProduct: async function (req, res) {
         try {
             if (Service.hasValidatorErrors(req, res)) {
@@ -322,7 +314,7 @@ module.exports = {
             }
             var checkProduct = await productSchema.findOne({ _id: req.params.productId, isDeleted: false });
             if (!checkProduct) {
-                return send(res, HttpStatus.SUCCESS_CODE, HttpStatus.SUCCESS_CODE, Message.PRODUCT_NOT_FOUND, null);
+                return send(res, HttpStatus.BAD_REQUEST_STATUS_CODE, ErrorCode.REQUIRED_CODE, Message.PRODUCT_NOT_FOUND, null);
             }
             checkProduct.isDeleted = true
             checkProduct.save()
@@ -339,7 +331,7 @@ module.exports = {
             })
             return send(res, HttpStatus.SUCCESS_CODE, HttpStatus.SUCCESS_CODE, Message.PRODUCT_DELETE, null);
         } catch (error) {
-            console.log('error', error);
+            console.log('deleteProduct', error);
             return send(res, HttpStatus.INTERNAL_SERVER_CODE, HttpStatus.INTERNAL_SERVER_CODE, Message.SOMETHING_WENT_WRONG, null);
         }
     },

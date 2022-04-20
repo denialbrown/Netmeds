@@ -23,7 +23,7 @@
  *        default: xyz
  *     responses:
  *       200:
- *         description: success
+ *         description:  search sucessfully
  *         content:
  *           application/json:
  *             schema:
@@ -31,16 +31,17 @@
  *               properties:
  *                 responseCode:
  *                   type: integer
+ *                   example: 200
  *                 responseMessage:
  *                    type: string
+ *                    example: search sucessfully
  *                 responseData:
  *                   type: object
  *                   properties:
- *                     data:
+ *                     search:
  *                       type: string
- *                       example: abc
  *       500:
- *         description: failed
+ *         description:  search failed
  *         content:
  *           application/json:
  *             schema:
@@ -49,5 +50,5 @@
  *                 responsecode:
  *                   type: integer
  *                 responseMessage:
- *                    type: string
+ *                   type: string
  */

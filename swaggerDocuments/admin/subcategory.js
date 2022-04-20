@@ -30,7 +30,7 @@
  *                 example: abc
  *     responses:
  *       200:
- *         description: success
+ *         description: sucessfully added category
  *         content:
  *           application/json:
  *             schema:
@@ -38,16 +38,18 @@
  *               properties:
  *                 responseCode:
  *                   type: integer
+ *                   example: 200
  *                 responseMessage:
- *                    type: string
+ *                   type: string
+ *                   example: sucessfully added category
  *                 responseData:
  *                   type: object
  *                   properties:
- *                     categoryName:
+ *                     id:
  *                       type: string
- *                       example: abc
+ *                       example: 62395a01adb56e8f5964ea45
  *       500:
- *         description: Login failed
+ *         description: add category failed
  *         content:
  *           application/json:
  *             schema:
@@ -56,7 +58,61 @@
  *                 responsecode:
  *                   type: integer
  *                 responseMessage:
+ *                   type: string
+ */
+/**
+ * @swagger
+ * /list/subCategory:
+ *   get:
+ *     summary: list subCategory 
+ *     tags: [subCategory]
+ *     parameters:
+ *      - in: header
+ *        name: nonce
+ *        required: true
+ *        default: 123456
+ *      - in: header
+ *        name: timestamp
+ *        required: true
+ *        default: 12345678
+ *      - in: header
+ *        name: token
+ *        required: true
+ *        default: 9067b6a045f321090ea476eaec169002c5e335a540cd77b5726c7547b2bf5209
+ *     responses:
+ *       200:
+ *         description: list subCategory sucessfully
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 responseCode:
+ *                   type: integer
+ *                   example: 200
+ *                 responseMessage:
  *                    type: string
+ *                    example: list subCategory sucessfully
+ *                 responseData:
+ *                   type: array
+ *                   properties:
+ *                     id:
+ *                       type: string
+ *                       example: 62395a01adb56e8f5964ea45
+ *                     subCategoryName:
+ *                       type: string
+ *                       example: abc
+ *       500:
+ *         description: list subCategory failed
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 responsecode:
+ *                   type: integer
+ *                 responseMessage:
+ *                   type: string
  */
 /**
  * @swagger
@@ -83,7 +139,7 @@
  *        default: 62395a01adb56e8f5964ea45
  *     responses:
  *       200:
- *         description: success
+ *         description: list subCategory sucessfully
  *         content:
  *           application/json:
  *             schema:
@@ -91,16 +147,18 @@
  *               properties:
  *                 responseCode:
  *                   type: integer
+ *                   example: 200
  *                 responseMessage:
  *                    type: string
+ *                    example: list subCategory sucessfully
  *                 responseData:
  *                   type: object
  *                   properties:
- *                     categoryName:
+ *                     subCategoryName:
  *                       type: string
  *                       example: abc
  *       500:
- *         description: Login failed
+ *         description: list subCategory failed
  *         content:
  *           application/json:
  *             schema:
@@ -109,7 +167,7 @@
  *                 responsecode:
  *                   type: integer
  *                 responseMessage:
- *                    type: string
+ *                   type: string
  */
 /**
  * @swagger
@@ -146,7 +204,7 @@
  *                 example: abc
  *     responses:
  *       200:
- *         description: success
+ *         description: sucessfully updated subCategory
  *         content:
  *           application/json:
  *             schema:
@@ -154,16 +212,18 @@
  *               properties:
  *                 responseCode:
  *                   type: integer
+ *                   example: 200
  *                 responseMessage:
- *                    type: string
+ *                   type: string
+ *                   example: sucessfully updated subCategory
  *                 responseData:
  *                   type: object
  *                   properties:
- *                     categoryName:
+ *                     id:
  *                       type: string
- *                       example: abc
+ *                       example: 62395a01adb56e8f5964ea45
  *       500:
- *         description: Login failed
+ *         description: update subCategory failed
  *         content:
  *           application/json:
  *             schema:
@@ -172,7 +232,7 @@
  *                 responsecode:
  *                   type: integer
  *                 responseMessage:
- *                    type: string
+ *                   type: string
  */
 /**
  * @swagger
@@ -199,7 +259,7 @@
  *        default: 62395a01adb56e8f5964ea45
  *     responses:
  *       200:
- *         description: success
+ *         description: delete subCategory sucessfully
  *         content:
  *           application/json:
  *             schema:
@@ -207,16 +267,12 @@
  *               properties:
  *                 responseCode:
  *                   type: integer
+ *                   example: 200
  *                 responseMessage:
  *                    type: string
- *                 responseData:
- *                   type: object
- *                   properties:
- *                     categoryName:
- *                       type: string
- *                       example: abc
+ *                    example: delete subCategory sucessfully
  *       500:
- *         description: Login failed
+ *         description: delete subCategory failed
  *         content:
  *           application/json:
  *             schema:
@@ -225,5 +281,5 @@
  *                 responsecode:
  *                   type: integer
  *                 responseMessage:
- *                    type: string
+ *                   type: string
  */

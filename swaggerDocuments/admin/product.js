@@ -52,7 +52,7 @@
  *                     format:  binary
  *     responses:
  *       200:
- *         description: success
+ *         description: sucessfully added subCategory
  *         content:
  *           application/json:
  *             schema:
@@ -60,34 +60,18 @@
  *               properties:
  *                 responseCode:
  *                   type: integer
+ *                   example: 200
  *                 responseMessage:
- *                    type: string
+ *                   type: string
+ *                   example: sucessfully added subCategory
  *                 responseData:
  *                   type: object
  *                   properties:
- *                     categoryId:
+ *                     id:
  *                       type: string
- *                       example:  id
- *                     subCategoryId:
- *                       type: string
- *                       example: id
- *                     profileImg:
- *                       type: string
- *                       example: id 
- *                     productName:
- *                       type: string
- *                       example: abc 
- *                     details:
- *                       type: Number
- *                       example: xyz
- *                     price:
- *                       type: string
- *                       example: 999  
- *                     pricedetails:
- *                       type: string
- *                       example:  20% discount
+ *                       example: 62395a01adb56e8f5964ea45
  *       500:
- *         description: signup failed
+ *         description: add subCategory failed
  *         content:
  *           application/json:
  *             schema:
@@ -96,7 +80,7 @@
  *                 responsecode:
  *                   type: integer
  *                 responseMessage:
- *                    type: string
+ *                   type: string
  */
 
 /**
@@ -120,7 +104,7 @@
  *        default: 9067b6a045f321090ea476eaec169002c5e335a540cd77b5726c7547b2bf5209
  *     responses:
  *       200:
- *         description: success
+ *         description: list product sucessfully
  *         content:
  *           application/json:
  *             schema:
@@ -128,8 +112,10 @@
  *               properties:
  *                 responseCode:
  *                   type: integer
+ *                   example: 200
  *                 responseMessage:
- *                    type: string
+ *                   type: string
+ *                   example: list product sucessfully
  *                 responseData:
  *                   type: object
  *                   properties:
@@ -139,7 +125,7 @@
  *                     subCategoryId:
  *                       type: string
  *                       example: id
- *                     profileImg:
+ *                     image:
  *                       type: string
  *                       example: id 
  *                     productName:
@@ -155,7 +141,7 @@
  *                       type: string
  *                       example:  20% discount
  *       500:
- *         description: signup failed
+ *         description: list product failed
  *         content:
  *           application/json:
  *             schema:
@@ -164,7 +150,7 @@
  *                 responsecode:
  *                   type: integer
  *                 responseMessage:
- *                    type: string
+ *                   type: string
  */
 
 /**
@@ -200,8 +186,10 @@
  *               properties:
  *                 responseCode:
  *                   type: integer
+ *                   example: 200
  *                 responseMessage:
- *                    type: string
+ *                   type: string
+ *                   example: list product sucessfully
  *                 responseData:
  *                   type: object
  *                   properties:
@@ -211,7 +199,7 @@
  *                     subCategoryId:
  *                       type: string
  *                       example: id
- *                     profileImg:
+ *                     image:
  *                       type: string
  *                       example: id 
  *                     productName:
@@ -227,7 +215,7 @@
  *                       type: string
  *                       example:  20% discount
  *       500:
- *         description: signup failed
+ *         description: list product failed
  *         content:
  *           application/json:
  *             schema:
@@ -236,7 +224,7 @@
  *                 responsecode:
  *                   type: integer
  *                 responseMessage:
- *                    type: string
+ *                   type: string
  */
 
 /**
@@ -297,7 +285,7 @@
  *                     format:  binary
  *     responses:
  *       200:
- *         description: success
+ *         description: add product sucessfully
  *         content:
  *           application/json:
  *             schema:
@@ -305,34 +293,18 @@
  *               properties:
  *                 responseCode:
  *                   type: integer
+ *                   example: 200
  *                 responseMessage:
- *                    type: string
+ *                   type: string
+ *                   example: add product sucessfully
  *                 responseData:
  *                   type: object
  *                   properties:
- *                     categoryId:
+ *                     id:
  *                       type: string
- *                       example:  id
- *                     subCategoryId:
- *                       type: string
- *                       example: id
- *                     profileImg:
- *                       type: string
- *                       example: id 
- *                     productName:
- *                       type: string
- *                       example: abc 
- *                     details:
- *                       type: Number
- *                       example: xyz
- *                     price:
- *                       type: string
- *                       example: 999  
- *                     pricedetails:
- *                       type: string
- *                       example:  20% discount
+ *                       example: 62395a01adb56e8f5964ea45
  *       500:
- *         description: signup failed
+ *         description: update product failed
  *         content:
  *           application/json:
  *             schema:
@@ -341,7 +313,7 @@
  *                 responsecode:
  *                   type: integer
  *                 responseMessage:
- *                    type: string
+ *                   type: string
  */
 
 /**
@@ -369,7 +341,7 @@
  *        default: 62395a01adb56e8f5964ea45
  *     responses:
  *       200:
- *         description: success
+ *         description: delete product sucessfully
  *         content:
  *           application/json:
  *             schema:
@@ -377,12 +349,12 @@
  *               properties:
  *                 responseCode:
  *                   type: integer
+ *                   example: 200
  *                 responseMessage:
  *                    type: string
- *                 responseData:
- *                   type: object
+ *                    example: delete product sucessfully
  *       500:
- *         description: signup failed
+ *         description: delete product failed
  *         content:
  *           application/json:
  *             schema:
@@ -391,6 +363,6 @@
  *                 responsecode:
  *                   type: integer
  *                 responseMessage:
- *                    type: string
+ *                   type: string
  */
 

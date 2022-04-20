@@ -9,8 +9,6 @@ var sid = process.env.SID_KEY;
 var auth_token = process.env.AUTH_TOKEN;
 var twilio = require("twilio")(sid, auth_token);
 const userSchema = require("../models/user")
-const date = require('date-and-time');
-const now = new Date();
 
 module.exports = {
     sendResponse(res, status, code, message, payload) {
@@ -37,13 +35,9 @@ module.exports = {
     getCurrentTimeStampWithAdditionMinutes: function (minutes) {
         return moment().add(minutes, "minutes").unix();
     },
-    getCurrentTimeAndDate: function () {
-        
-        return date.format(now, 'DD MMMM,YYYY at HH:mm');
-    },
     generateOneTimePassword: async function (length) {
-
-        return otpGenerator.generate(length, { digits: true, specialChars: false, upperCaseAlphabets: false, lowerCaseAlphabets: false });
+        return 1234;
+        // return otpGenerator.generate(length, { digits: true, specialChars: false, upperCaseAlphabets: false, lowerCaseAlphabets: false });
     },
     response: function (internalCode, message, data) {
         if (data != null || data != undefined) {
@@ -134,5 +128,3 @@ async function generateJwt(payload) {
     });
     return token;
 }
-
-

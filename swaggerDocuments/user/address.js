@@ -47,7 +47,7 @@
  *                 example: 382350
  *     responses:
  *       200:
- *         description: Address added successfully
+ *         description: address added sucessfully
  *         content:
  *           application/json:
  *             schema:
@@ -55,34 +55,18 @@
  *               properties:
  *                 responseCode:
  *                   type: integer
+ *                   example: 200
  *                 responseMessage:
- *                    type: string
+ *                   type: string
+ *                   example: address added sucessfully
  *                 responseData:
  *                   type: object
  *                   properties:
- *                     firstName:
+ *                     id:
  *                       type: string
- *                       example: abc 
- *                     lastName:
- *                       type: string
- *                       example: xyz
- *                     address:
- *                       type: string
- *                       example: street
- *                     landMark:
- *                       type: string
- *                       example: landmark  
- *                     city:
- *                       type: string
- *                       example: ahmedabad
- *                     state:
- *                       type: string
- *                       example: gujrat
- *                     pincode:
- *                       type: string
- *                       example: 382350    
+ *                       example: 62395a01adb56e8f5964ea45
  *       500:
- *         description: failed
+ *         description: address added failed
  *         content:
  *           application/json:
  *             schema:
@@ -91,7 +75,7 @@
  *                 responsecode:
  *                   type: integer
  *                 responseMessage:
- *                    type: string
+ *                   type: string
  */
 
 
@@ -116,7 +100,7 @@
  *        default: 9067b6a045f321090ea476eaec169002c5e335a540cd77b5726c7547b2bf5209 
  *     responses:
  *       200:
- *         description: Address added successfully
+ *         description: Address listed successfully
  *         content:
  *           application/json:
  *             schema:
@@ -124,8 +108,10 @@
  *               properties:
  *                 responseCode:
  *                   type: integer
+ *                   example: 200
  *                 responseMessage:
  *                    type: string
+ *                    example: Address listed successfully
  *                 responseData:
  *                   type: object
  *                   properties:
@@ -148,10 +134,10 @@
  *                       type: string
  *                       example: gujrat
  *                     pincode:
- *                       type: string
+ *                       type: integer
  *                       example: 382350    
  *       500:
- *         description: failed
+ *         description:  address list failed
  *         content:
  *           application/json:
  *             schema:
@@ -160,7 +146,7 @@
  *                 responsecode:
  *                   type: integer
  *                 responseMessage:
- *                    type: string
+ *                   type: string
  */
 
 /**
@@ -188,7 +174,7 @@
  *        default: 62395a01adb56e8f5964ea45  
  *     responses:
  *       200:
- *         description: Address added successfully
+ *         description: Address listed successfully
  *         content:
  *           application/json:
  *             schema:
@@ -196,8 +182,10 @@
  *               properties:
  *                 responseCode:
  *                   type: integer
+ *                   example: 200
  *                 responseMessage:
  *                    type: string
+ *                    example: Address listed successfully
  *                 responseData:
  *                   type: object
  *                   properties:
@@ -220,10 +208,10 @@
  *                       type: string
  *                       example: gujrat
  *                     pincode:
- *                       type: string
- *                       example: 382350    
+ *                       type: integer
+ *                       example: 382350     
  *       500:
- *         description: failed
+ *         description:  address list failed
  *         content:
  *           application/json:
  *             schema:
@@ -232,7 +220,7 @@
  *                 responsecode:
  *                   type: integer
  *                 responseMessage:
- *                    type: string
+ *                   type: string
  */
 
 /**
@@ -288,7 +276,7 @@
  *                 example: 382350
  *     responses:
  *       200:
- *         description: Address added successfully
+ *         description: address updated sucessfully
  *         content:
  *           application/json:
  *             schema:
@@ -296,34 +284,18 @@
  *               properties:
  *                 responseCode:
  *                   type: integer
+ *                   example: 200
  *                 responseMessage:
- *                    type: string
+ *                   type: string
+ *                   example: address updated sucessfully
  *                 responseData:
  *                   type: object
  *                   properties:
- *                     firstName:
+ *                     id:
  *                       type: string
- *                       example: abc 
- *                     lastName:
- *                       type: string
- *                       example: xyz
- *                     address:
- *                       type: string
- *                       example: street
- *                     landMark:
- *                       type: string
- *                       example: landmark  
- *                     city:
- *                       type: string
- *                       example: ahmedabad
- *                     state:
- *                       type: string
- *                       example: gujrat
- *                     pincode:
- *                       type: string
- *                       example: 382350    
+ *                       example: 62395a01adb56e8f5964ea45
  *       500:
- *         description: failed
+ *         description:  address update failed
  *         content:
  *           application/json:
  *             schema:
@@ -332,7 +304,7 @@
  *                 responsecode:
  *                   type: integer
  *                 responseMessage:
- *                    type: string
+ *                   type: string
  */
 
 /**
@@ -360,7 +332,7 @@
  *        default: 62395a01adb56e8f5964ea45  
  *     responses:
  *       200:
- *         description: delete address successfully
+ *         description:  address deleted sucessfully
  *         content:
  *           application/json:
  *             schema:
@@ -368,12 +340,12 @@
  *               properties:
  *                 responseCode:
  *                   type: integer
+ *                   example: 200
  *                 responseMessage:
  *                    type: string
- *                 responseData:
- *                   type: object    
+ *                    example:  address deleted sucessfully
  *       500:
- *         description: failed
+ *         description:  address delete failed
  *         content:
  *           application/json:
  *             schema:
@@ -382,5 +354,5 @@
  *                 responsecode:
  *                   type: integer
  *                 responseMessage:
- *                    type: string
+ *                   type: string
  */
