@@ -13,7 +13,7 @@ router.get("/list/cart", [middleware.authenticateUser], cartController.listCart)
 
 router.post("/update/cart/:cartId", [middleware.authenticateUser],
     param("cartId").exists().isMongoId().withMessage(Message.CART_ID_INVALID).not().isEmpty(),
-    body("qty").exists().isNumeric().withMessage(Message.QTY_IS_INVALID).not().isEmpty(),
+    body("quantity").exists().isNumeric().withMessage(Message.QTY_IS_INVALID).not().isEmpty(),
     cartController.updateCart);
 router.delete("/delete/cart/:cartId", [middleware.authenticateUser],
     param("cartId").exists().isMongoId().withMessage(Message.CART_ID_INVALID).not().isEmpty(),

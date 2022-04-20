@@ -7,8 +7,8 @@ const { Message } = require("../../helper/localization");
 module.exports = {
     /**
      * This function is use for search product
-      @params {} req.params.search
-      @body {} res
+     * @params {} req.params.search
+     * @body {} res
      * @returns
      */
     searchProduct: async function (req, res) {
@@ -69,7 +69,7 @@ module.exports = {
             ])
             return send(res, HttpStatus.SUCCESS_CODE, HttpStatus.SUCCESS_CODE, Message.CART_LIST, data);
         } catch (error) {
-            console.log('error', error);
+            console.log('searchProduct', error);
             return send(res, HttpStatus.INTERNAL_SERVER_CODE, HttpStatus.INTERNAL_SERVER_CODE, Message.SOMETHING_WENT_WRONG, null);
         }
     },

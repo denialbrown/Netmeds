@@ -18,7 +18,7 @@ const userSchema = new mongoose.Schema({
   gender: {
     type: String,
   },
-  age: {
+  dateOfBirth: {
     type: String,
   },
   otp: {

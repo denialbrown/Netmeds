@@ -2,40 +2,45 @@ const productSchema = require("../../models/product");
 const wishListSchema = require("../../models/wishList");
 const Service = require("../../helper/index");
 const send = Service.sendResponse;
-const { HttpStatus } = require("../../helper/enum")
+const { HttpStatus, ErrorCode } = require("../../helper/enum")
 const { Message } = require("../../helper/localization");
 
 module.exports = {
     /**
      * This function is use for delete product to wishlist
-      @body {} req.body.productId
-      @body {} res
+     * @body {} req.body.productId
+     * @body {} res
      * @returns
      */
     addWishList: async function (req, res) {
         try {
             var wishlist = await wishListSchema.findOne({ productId: req.body.productId, isDeleted: false })
             if (wishlist) {
-                return send(res, HttpStatus.SUCCESS_CODE, HttpStatus.SUCCESS_CODE, Message.PRODUCT_ADDED, null);
+                return send(res, HttpStatus.UNAUTHORIZED, ErrorCode.INVALID_CODE, Message.PRODUCT_ADDED, null);
             }
             var product = await productSchema.findOne({ _id: req.body.productId, isDeleted: false })
             if (!product) {
-                return send(res, HttpStatus.SUCCESS_CODE, HttpStatus.SUCCESS_CODE, Message.PRODUCT_NOT_FOUND, null);
+                return send(res, HttpStatus.BAD_REQUEST_STATUS_CODE, ErrorCode.REQUIRED_CODE, Message.PRODUCT_NOT_FOUND, null);
             }
             var wishProduct = new wishListSchema
             wishProduct.userId = req.authUser._id
             wishProduct.productId = product._id
-            wishProduct.save()
-            return send(res, HttpStatus.SUCCESS_CODE, HttpStatus.SUCCESS_CODE, Message.PRODUCT_ADD_WISHLIST, null);
+            var save = await wishProduct.save()
+            if (!save) {
+                return send(res, HttpStatus.INTERNAL_SERVER_CODE, HttpStatus.INTERNAL_SERVER_CODE, Message.ADDRESS_NOT_SAVE, null);
+            }
+            return send(res, HttpStatus.SUCCESS_CODE, HttpStatus.SUCCESS_CODE, Message.PRODUCT_ADD_WISHLIST, {
+                id: wishProduct._id
+            });
         } catch (error) {
-            console.log('error', error);
+            console.log('addWishList', error);
             return send(res, HttpStatus.INTERNAL_SERVER_CODE, HttpStatus.INTERNAL_SERVER_CODE, Message.SOMETHING_WENT_WRONG, null);
         }
     },
     /**
      * This function is use for list to wishlist
-      @header {} req.authUser._id
-      @body {} res
+     * @header {} req.authUser._id
+     * @body {} res
      * @returns
      */
     getWishList: async function (req, res) {
@@ -100,14 +105,14 @@ module.exports = {
             ])
             return send(res, HttpStatus.SUCCESS_CODE, HttpStatus.SUCCESS_CODE, Message.WISH_LIST, product);
         } catch (error) {
-            console.log('error', error);
+            console.log('getWishList', error);
             return send(res, HttpStatus.INTERNAL_SERVER_CODE, HttpStatus.INTERNAL_SERVER_CODE, Message.SOMETHING_WENT_WRONG, null);
         }
     },
     /**
      * This function is use for list to wishlist
-      @params {}  req.params.wishListId
-      @body {} res
+     * @params {}  req.params.wishListId
+     * @body {} res
      * @returns
      */
     deleteWishList: async function (req, res) {
@@ -115,15 +120,13 @@ module.exports = {
             if (Service.hasValidatorErrors(req, res)) {
                 return;
             }
-            var product = await wishListSchema.findOne({ _id: req.params.wishListId, isDeleted: false })
+            var product = await wishListSchema.findByIdAndRemove({ _id: req.params.wishListId})
             if (!product) {
-                return send(res, HttpStatus.SUCCESS_CODE, HttpStatus.SUCCESS_CODE, Message.PRODUCT_NOT_FOUND, null);
+                return send(res, HttpStatus.BAD_REQUEST_STATUS_CODE, ErrorCode.REQUIRED_CODE, Message.PRODUCT_NOT_FOUND, null);
             }
-            product.isDeleted = true
-            product.save()
             return send(res, HttpStatus.SUCCESS_CODE, HttpStatus.SUCCESS_CODE, Message.WISH_LIST_DELETE, null);
         } catch (error) {
-            console.log('error', error);
+            console.log('deleteWishList', error);
             return send(res, HttpStatus.INTERNAL_SERVER_CODE, HttpStatus.INTERNAL_SERVER_CODE, Message.SOMETHING_WENT_WRONG, null);
         }
     },

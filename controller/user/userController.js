@@ -6,12 +6,13 @@ const { Message } = require("../../helper/localization")
 const jwt_decode = require("jwt-decode");
 
 module.exports = {
-     /**
-     * This function is use for signup/login for user 
-      @params {} req.body.phone
-      @body {} res
-     * @returns
-     */
+    /**
+    * This function is use for signup/login for user 
+    * @body {} req.body.countryCode
+    * @body {} req.body.phone
+    * @body {} res
+    * @returns
+    */
     signupUser: async function (req, res) {
         try {
             if (Service.hasValidatorErrors(req, res)) {
@@ -22,9 +23,12 @@ module.exports = {
                 var newuser = new userSchema;
                 newuser.phone = req.body.phone
                 newuser.otp = await Service.generateOneTimePassword(4)
-                newuser.otpCreatedAt = await Service.getCurrentTimeStampWithAdditionMinutes(0);
-                newuser.save()
-                var phone = '+91' + req.body.phone
+                newuser.otpCreatedAt = await Service.getCurrentTimeStampWithAdditionMinutes(2);
+                var save = newuser.save()
+                if (!save) {
+                    return send(res, HttpStatus.INTERNAL_SERVER_CODE, HttpStatus.INTERNAL_SERVER_CODE, Message.ADDRESS_NOT_SAVE, null);
+                }
+                var phone = req.body.countryCode + req.body.phone
                 var otp = newuser.otp
                 await Service.sendOtp(phone, otp)
                 const data = {
@@ -35,8 +39,11 @@ module.exports = {
             user.phone = req.body.phone
             user.otp = await Service.generateOneTimePassword(4)
             user.otpCreatedAt = await Service.getCurrentTimeStampWithAdditionMinutes(2);
-            user.save()
-            var phone = '+91' + req.body.phone
+            var save = user.save()
+            if (!save) {
+                return send(res, HttpStatus.INTERNAL_SERVER_CODE, HttpStatus.INTERNAL_SERVER_CODE, Message.ADDRESS_NOT_SAVE, null);
+            }
+            var phone = req.body.countryCode + req.body.phone
             var otp = user.otp
             await Service.sendOtp(phone, otp)
 
@@ -46,15 +53,15 @@ module.exports = {
             return send(res, HttpStatus.SUCCESS_CODE, HttpStatus.SUCCESS_CODE, Message.USER_LOGIN_SUCCESS, data);
 
         } catch (error) {
-            console.log('error', error);
+            console.log('signupUser', error);
             return send(res, HttpStatus.INTERNAL_SERVER_CODE, HttpStatus.INTERNAL_SERVER_CODE, Message.SOMETHING_WENT_WRONG, null);
         }
     },
     /**
      * This function is use for signup/login verify user 
-      @body {} req.body.token
-      @body {} req.body.otp
-      @body {} res
+     * @body {} req.body.token
+     * @body {} req.body.otp
+     * @body {} res
      * @returns
      */
     verifyUser: async function (req, res) {
@@ -72,31 +79,34 @@ module.exports = {
                 return send(res, HttpStatus.UNAUTHORIZED, ErrorCode.INVALID_CODE, Message.TOKEN_INVALID, null);
             }
             var loginTime = await Service.getCurrentTimeStampUnix(0);
-            if (user.otp != req.body.otp || user.otpCreatedAt > loginTime) {
+            if (user.otp != req.body.otp || user.otpCreatedAt < loginTime) {
                 return send(res, HttpStatus.UNAUTHORIZED, ErrorCode.INVALID_CODE, Message.OTP_INVALID);
             }
             user.otp = ""
             user.otpCreatedAt = ""
             user.otpVerified = true
-            await user.save()
+            var save = await user.save()
+            if (!save) {
+                return send(res, HttpStatus.INTERNAL_SERVER_CODE, HttpStatus.INTERNAL_SERVER_CODE, Message.ADDRESS_NOT_SAVE, null);
+            }
             const data = {
                 loginToken: await Service.generateToken(user),
             };
             return send(res, HttpStatus.SUCCESS_CODE, HttpStatus.SUCCESS_CODE, Message.USER_LOGIN_SUCCESS, data);
 
         } catch (error) {
-            console.log('error', error);
+            console.log('verifyUser', error);
             return send(res, HttpStatus.INTERNAL_SERVER_CODE, HttpStatus.INTERNAL_SERVER_CODE, Message.SOMETHING_WENT_WRONG, null);
         }
     },
     /**
      * This function is use for add user profile 
-      @body {} req.body.firstName
-      @body {} req.body.lastName
-      @body {} req.body.email
-      @body {} req.body.gender
-      @body {} req.body.age
-      @body {} res
+     * @body {} req.body.firstName
+     * @body {} req.body.lastName
+     * @body {} req.body.email
+     * @body {} req.body.gender
+     * @body {} req.body.age
+     * @body {} res
      * @returns
      */
     userProfile: async function (req, res) {
@@ -109,7 +119,10 @@ module.exports = {
             req.authUser.email = req.body.email
             req.authUser.gender = req.body.gender
             req.authUser.age = req.body.age
-            req.authUser.save()
+            var save = await req.authUser.save()
+            if (!save) {
+                return send(res, HttpStatus.INTERNAL_SERVER_CODE, HttpStatus.INTERNAL_SERVER_CODE, Message.ADDRESS_NOT_SAVE, null);
+            }
             return send(res, HttpStatus.SUCCESS_CODE, HttpStatus.SUCCESS_CODE, Message.USER_SIGNUP_SUCCESS, {
                 id: req.authUser._id,
                 firstName: req.authUser.firstName,
@@ -120,7 +133,7 @@ module.exports = {
                 age: req.authUser.age,
             });
         } catch (error) {
-            console.log('error', error);
+            console.log('userProfile', error);
             return send(res, HttpStatus.INTERNAL_SERVER_CODE, HttpStatus.INTERNAL_SERVER_CODE, Message.SOMETHING_WENT_WRONG, null);
         }
     },
@@ -140,18 +153,18 @@ module.exports = {
                 age: req.authUser.age,
             });
         } catch (error) {
-            console.log('error', error);
+            console.log('getUserProfile', error);
             return send(res, HttpStatus.INTERNAL_SERVER_CODE, HttpStatus.INTERNAL_SERVER_CODE, Message.SOMETHING_WENT_WRONG, null);
         }
     },
     /**
      * This function is use for update user profile 
-      @body {} req.body.firstName
-      @body {} req.body.lastName
-      @body {} req.body.email
-      @body {} req.body.gender
-      @body {} req.body.age
-      @body {} res
+     * @body {} req.body.firstName
+     * @body {} req.body.lastName
+     * @body {} req.body.email
+     * @body {} req.body.gender
+     * @body {} req.body.age
+     * @body {} res
      * @returns
      */
     updateProfile: async function (req, res) {
@@ -162,31 +175,29 @@ module.exports = {
             req.authUser.firstName = req.body.firstName
             req.authUser.lastName = req.body.lastName
             req.authUser.gender = req.body.gender
-            req.authUser.age = req.body.age
-            if(req.authUser.phone == undefined){
+            req.authUser.dateOfBirth = req.body.dateOfBirth
+            if (req.authUser.phone == undefined) {
                 req.authUser.phone = req.body.phone
             }
-            if(req.authUser.email == undefined){
-                req.authUser.email =req.body.email
+            if (req.authUser.email == undefined) {
+                req.authUser.email = req.body.email
             }
-            req.authUser.save()
+            var save = req.authUser.save()
+            if (!save) {
+                return send(res, HttpStatus.INTERNAL_SERVER_CODE, HttpStatus.INTERNAL_SERVER_CODE, Message.ADDRESS_NOT_SAVE, null);
+            }
             return send(res, HttpStatus.SUCCESS_CODE, HttpStatus.SUCCESS_CODE, Message.USER_SIGNUP_SUCCESS, {
-                firstName: req.authUser.firstName,
-                lastName: req.authUser.lastName,
-                phone: req.authUser.phone,
-                email: req.authUser.email,
-                gender: req.authUser.gender,
-                age: req.authUser.age,
+                id: req.authUser._id
             });
         } catch (error) {
-            console.log('error', error);
+            console.log('updateProfile', error);
             return send(res, HttpStatus.INTERNAL_SERVER_CODE, HttpStatus.INTERNAL_SERVER_CODE, Message.SOMETHING_WENT_WRONG, null);
         }
     },
     /**
      * This function is use for update user profile 
-      @body {} req.body.token
-      @body {} res
+     * @body {} req.body.token
+     * @body {} res
      * @returns
      */
     signupgoogle: async function (req, res) {
@@ -203,7 +214,10 @@ module.exports = {
             if (!user) {
                 var user = new userSchema
                 user.email = decoded.email
-                await user.save()
+                var save = await user.save()
+                if (!save) {
+                    return send(res, HttpStatus.INTERNAL_SERVER_CODE, HttpStatus.INTERNAL_SERVER_CODE, Message.ADDRESS_NOT_SAVE, null);
+                }
                 const data = {
                     loginToken: await Service.generateToken(user),
                 };
@@ -215,7 +229,7 @@ module.exports = {
             return send(res, HttpStatus.SUCCESS_CODE, HttpStatus.SUCCESS_CODE, Message.USER_LOGIN_SUCCESS, data);
 
         } catch (error) {
-            console.log('error', error);
+            console.log('signupgoogle', error);
             return send(res, HttpStatus.INTERNAL_SERVER_CODE, HttpStatus.INTERNAL_SERVER_CODE, Message.SOMETHING_WENT_WRONG, null);
         }
     },

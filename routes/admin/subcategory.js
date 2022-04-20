@@ -9,6 +9,8 @@ router.post("/add/sub-category", [middleware.authenticateUser],
     body("subCategoryName").exists().withMessage(Message.SUBCATEGORY_NAME_IS_REQUIRED).not().isEmpty(),
     subCategoryController.addSubCategory);
 
+router.get("/list/subCategory", [middleware.authenticateUser], subCategoryController.listsubCategory);
+
 router.get("/get/sub-category/:subCategoryId", [middleware.authenticateUser],
     param("subCategoryId").exists().isMongoId().withMessage(Message.SUBCATEGORY_ID_IS_REQUIRED).not().isEmpty(),
     subCategoryController.getSubCategory);
@@ -21,5 +23,5 @@ router.post("/update/sub-category/:subCategoryId", [middleware.authenticateUser]
 router.delete("/delete/sub-category/:subCategoryId", [middleware.authenticateUser],
     param("subCategoryId").exists().isMongoId().withMessage(Message.SUBCATEGORY_ID_IS_REQUIRED).not().isEmpty(),
     subCategoryController.deleteSubCategory);
-    
+
 module.exports = router

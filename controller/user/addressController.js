@@ -1,20 +1,20 @@
 const addressSchema = require("../../models/address");
 const Service = require("../../helper/index");
 const send = Service.sendResponse;
-const { HttpStatus } = require("../../helper/enum")
+const { HttpStatus, ErrorCode } = require("../../helper/enum")
 const { Message } = require("../../helper/localization")
 
 module.exports = {
     /**
      * This function is use for add address
-      @body {} req.body.firstName
-      @body {} req.body.lastName
-      @body {} req.body.address
-      @body {} req.body.landMark
-      @body {} req.body.city
-      @body {} req.body.state
-      @body {} req.body.pincode
-      @body {} res
+     * @body {} req.body.firstName
+     * @body {} req.body.lastName
+     * @body {} req.body.address
+     * @body {} req.body.landMark
+     * @body {} req.body.city
+     * @body {} req.body.state
+     * @body {} req.body.pincode
+     * @body {} res
      * @returns
      */
     addAddress: async function (req, res) {
@@ -22,6 +22,7 @@ module.exports = {
             if (Service.hasValidatorErrors(req, res)) {
                 return;
             }
+            await addressSchema.updateMany({ userId: req.authUser._id }, { $set: { mark: false } })
             var newAddress = new addressSchema;
             newAddress.userId = req.authUser._id
             newAddress.phone = req.authUser.phone
@@ -32,32 +33,27 @@ module.exports = {
             newAddress.city = req.body.city
             newAddress.state = req.body.state
             newAddress.pincode = req.body.pincode
-            await addressSchema.updateMany({ userId: req.authUser._id }, { $set: { mark: false } })
             newAddress.mark = true
-            await newAddress.save()
+            var save = await newAddress.save()
+            if (!save) {
+                return send(res, HttpStatus.INTERNAL_SERVER_CODE, HttpStatus.INTERNAL_SERVER_CODE, Message.ADDRESS_NOT_SAVE, null);
+            }
             return send(res, HttpStatus.SUCCESS_CODE, HttpStatus.SUCCESS_CODE, Message.ADDRESS_ADD_SUCCESS, {
-                phone: newAddress.phone,
-                firstName: newAddress.firstName,
-                lastName: newAddress.lastName,
-                address: newAddress.address,
-                landMark: newAddress.landMark,
-                city: newAddress.city,
-                state: newAddress.state,
-                pincode: newAddress.pincode,
+                id: newAddress._id
             });
         } catch (error) {
-            console.log(error);
+            console.log('addAddress', error);
             return send(res, HttpStatus.INTERNAL_SERVER_CODE, HttpStatus.INTERNAL_SERVER_CODE, Message.SOMETHING_WENT_WRONG);
         }
     },
     /**
      * This function is use for list address
-      @body {} res
+     * @body {} res
      * @returns
      */
     listAddress: async function (req, res) {
         try {
-            var userAddress = await addressSchema.find({ phone: req.authUser.phone, isDeleted: false }, {
+            var userAddress = await addressSchema.find({ userId: req.authUser._id, isDeleted: false }, {
                 _id: 0,
                 phone: 1,
                 firstName: 1,
@@ -69,19 +65,19 @@ module.exports = {
                 pincode: 1,
             })
             if (!userAddress) {
-                return send(res, HttpStatus.SUCCESS_CODE, HttpStatus.SUCCESS_CODE, Message.USER_ADDRESS_NOT_FOUND, null);
+                return send(res, HttpStatus.BAD_REQUEST_STATUS_CODE, ErrorCode.REQUIRED_CODE, Message.USER_ADDRESS_NOT_FOUND, null);
             }
             return send(res, HttpStatus.SUCCESS_CODE, HttpStatus.SUCCESS_CODE, Message.USER_ADDRESSES, userAddress);
 
         } catch (error) {
-            console.log(error);
+            console.log('listAddress', error);
             return send(res, HttpStatus.INTERNAL_SERVER_CODE, HttpStatus.INTERNAL_SERVER_CODE, Message.SOMETHING_WENT_WRONG);
         }
     },
     /**
      * This function is use for list address
-      @params {} req.params.addressId
-      @body {} res
+     * @params {} req.params.addressId
+     * @body {} res
      * @returns
      */
     getAddress: async function (req, res) {
@@ -101,26 +97,26 @@ module.exports = {
                 pincode: 1,
             })
             if (!userAddress) {
-                return send(res, HttpStatus.SUCCESS_CODE, HttpStatus.SUCCESS_CODE, Message.USER_ADDRESS_NOT_FOUND, null);
+                return send(res, HttpStatus.BAD_REQUEST_STATUS_CODE, ErrorCode.REQUIRED_CODE, Message.USER_ADDRESS_NOT_FOUND, null);
             }
             return send(res, HttpStatus.SUCCESS_CODE, HttpStatus.SUCCESS_CODE, Message.USER_ADDRESSES, userAddress);
 
         } catch (error) {
-            console.log(error);
+            console.log('getAddress', error);
             return send(res, HttpStatus.INTERNAL_SERVER_CODE, HttpStatus.INTERNAL_SERVER_CODE, Message.SOMETHING_WENT_WRONG);
         }
     },
     /**
      * This function is use for update address
-      @params {} req.params.addressId
-      @body {} req.body.firstName
-      @body {} req.body.lastName
-      @body {} req.body.address
-      @body {} req.body.landMark
-      @body {} req.body.city
-      @body {} req.body.state
-      @body {} req.body.pincode
-      @body {} res
+     * @params {} req.params.addressId
+     * @body {} req.body.firstName
+     * @body {} req.body.lastName
+     * @body {} req.body.address
+     * @body {} req.body.landMark
+     * @body {} req.body.city
+     * @body {} req.body.state
+     * @body {} req.body.pincode
+     * @body {} res
      * @returns
      */
     updateAddress: async function (req, res) {
@@ -130,8 +126,9 @@ module.exports = {
             }
             var checkAddress = await addressSchema.findOne({ _id: req.params.addressId, isDeleted: false });
             if (!checkAddress) {
-                return send(res, HttpStatus.SUCCESS_CODE, HttpStatus.SUCCESS_CODE, Message.ADDRESS_NOT_FOUND, null);
+                return send(res, HttpStatus.BAD_REQUEST_STATUS_CODE, ErrorCode.REQUIRED_CODE, Message.ADDRESS_NOT_FOUND, null);
             }
+            await addressSchema.updateMany({ userId: req.authUser._id }, { $set: { mark: false } })
             checkAddress.userId = req.authUser._id
             checkAddress.phone = req.authUser.phone
             checkAddress.firstName = req.body.firstName
@@ -141,29 +138,23 @@ module.exports = {
             checkAddress.city = req.body.city
             checkAddress.state = req.body.state
             checkAddress.pincode = req.body.pincode
-            var mark = await addressSchema.updateMany({ userId: req.authUser._id }, { $set: { mark: false } })
             checkAddress.mark = true
-            await checkAddress.save()
+            var save = await checkAddress.save()
+            if (!save) {
+                return send(res, HttpStatus.INTERNAL_SERVER_CODE, HttpStatus.INTERNAL_SERVER_CODE, Message.ADDRESS_NOT_SAVE, null);
+            }
             return send(res, HttpStatus.SUCCESS_CODE, HttpStatus.SUCCESS_CODE, Message.ADDRESS_UPDATE_SUCCESS, {
-                phone: checkAddress.phone,
-                firstName: checkAddress.firstName,
-                lastName: checkAddress.lastName,
-                address: checkAddress.address,
-                landMark: checkAddress.landMark,
-                city: checkAddress.city,
-                state: checkAddress.state,
-                pincode: checkAddress.pincode,
+                id: checkAddress._id
             });
-
         } catch (error) {
-            console.log(error);
+            console.log('updateAddress', error);
             return send(res, HttpStatus.INTERNAL_SERVER_CODE, HttpStatus.INTERNAL_SERVER_CODE, Message.SOMETHING_WENT_WRONG);
         }
     },
     /**
      * This function is use for delete address
-      @params {} req.params.addressId
-      @body {} res
+     * @params {} req.params.addressId
+     * @body {} res
      * @returns
      */
     deleteAddress: async function (req, res) {
@@ -173,16 +164,19 @@ module.exports = {
             }
             var checkAddress = await addressSchema.findOne({ _id: req.params.addressId, isDeleted: false });
             if (!checkAddress) {
-                return send(res, HttpStatus.SUCCESS_CODE, HttpStatus.SUCCESS_CODE, Message.ADDRESS_NOT_FOUND, null);
+                return send(res, HttpStatus.BAD_REQUEST_STATUS_CODE, ErrorCode.REQUIRED_CODE, Message.ADDRESS_NOT_FOUND, null);
             }
             if (checkAddress.mark == true) {
                 return send(res, HttpStatus.SUCCESS_CODE, HttpStatus.SUCCESS_CODE, Message.PRIMARY_ADDRESS, null);
             }
             checkAddress.isDeleted = true
-            checkAddress.save()
+            var save = checkAddress.save()
+            if (!save) {
+                return send(res, HttpStatus.INTERNAL_SERVER_CODE, HttpStatus.INTERNAL_SERVER_CODE, Message.ADDRESS_NOT_SAVE, null);
+            }
             return send(res, HttpStatus.SUCCESS_CODE, HttpStatus.SUCCESS_CODE, Message.ADDRESS_DELETE_SUCESSFULLY, null);
         } catch (error) {
-            console.log(error);
+            console.log('deleteAddress', error);
             return send(res, HttpStatus.INTERNAL_SERVER_CODE, HttpStatus.INTERNAL_SERVER_CODE, Message.SOMETHING_WENT_WRONG);
         }
     },
